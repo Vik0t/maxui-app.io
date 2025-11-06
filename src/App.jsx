@@ -30,7 +30,7 @@ export default function App() {
   return (
     <MaxUI>
       <Panel centeredX centeredY>
-        <h2>Привет{user ? `, ${user.first_name}` : ""}!</h2>
+        <h2>Привет медвед{user ? `, ${user.first_name}` : ""}!</h2>
         <Button onClick={handleContact}>Отправить телефон</Button>
       </Panel>
     </MaxUI>

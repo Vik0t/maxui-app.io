@@ -2,6 +2,7 @@
   "name": "max-ui-app",
   "version": "1.0.0",
   "type": "module",
+  "homepage": "https://Vik0t.github.io/maxui-app.io", 
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,14 +10,13 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "@maxhub/max-ui": "^0.1.9",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "@maxhub/max-ui": "^0.1.9"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^5.1.0",
-    "gh-pages": "^6.3.0",
-    "vite": "^7.2.1"
-  },
-  "homepage": "https://Vik0t.github.io/max-ui-app"
+    "vite": "^4.3.9",
+    "@vitejs/plugin-react": "^3.1.0",
+    "gh-pages": "^5.0.0"
+  }
 }
