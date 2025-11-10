@@ -3,18 +3,14 @@ import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, Input } from "@maxhub/max-ui";
 import "../App.css";
 
-const FinanceSchema = () => {
+const CertificateSchema = () => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         name: '',
         faculty: '',
         courseWithGroup: '',
         contactPhone: '',
-
-        passSerial: '',
-        passInfo: '',
-        registration: '',
-
+        
         reason: '',
         documents: '',
         date: ''
@@ -39,6 +35,7 @@ const FinanceSchema = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Form submitted:', formData);
+        // Here you would typically send the data to a server
     };
     
     return (
@@ -57,11 +54,6 @@ const FinanceSchema = () => {
                                     2
                                 </div>
                             </div>
-                            <div className={`progress-step ${step >= 3 ? "active": ""}`}>
-                                <div className="step-number">
-                                    3
-                                </div>
-                            </div>
                         </div>
 
                         <form onSubmit={handleSubmit}>
@@ -75,15 +67,6 @@ const FinanceSchema = () => {
 
                             {step === 2 && (
                                 <Step2
-                                    formData={formData}
-                                    handleChange={handleChange}
-                                    nextStep={nextStep}
-                                    prevStep={prevStep}
-                                />
-                            )}
-
-                            {step === 3 && (
-                                <Step3
                                     formData={formData}
                                     handleChange={handleChange}
                                     prevStep={prevStep}
@@ -151,67 +134,11 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
     );
 };
 
-const Step2 = ({ formData, handleChange, nextStep, prevStep }) => {
-    const canProceed = formData.passSerial && formData.passPlace && formData.registration;
-
-    return (
-        <div className="step">
-            <Flex direction="column" gap={12}>
-                <Typography.Headline variant="medium-strong">
-                    Данные паспорта
-                </Typography.Headline>
-                
-                <Input
-                    onChange={handleChange}
-                    name="passSerial"
-                    mode="secondary"
-                    placeholder="Введите серию и номер паспорта через пробел"
-                    required
-                />
-                <Input
-                    onChange={handleChange}
-                    name="passPlace"
-                    mode="secondary"
-                    placeholder="Кем и когда выдан"
-                    required
-                />
-                <Input
-                    onChange={handleChange}
-                    name="registration"
-                    mode="secondary"
-                    placeholder="Адрес регистрации"
-                    required
-                />
-                <Flex direction="row" gap={12}>
-                    <Button
-                        appearance="themed"
-                        mode="primary"
-                        size="medium"
-                        stretched
-                        onClick={prevStep}
-                    >
-                        Назад
-                    </Button>
-                    <Button
-                        appearance="themed"
-                        mode="primary"
-                        size="medium"
-                        stretched
-                        onClick={nextStep}
-                        disabled={!canProceed}
-                    >
-                        Далее
-                    </Button>
-                </Flex>
-            </Flex>
-        </div>
-    );
-};
-
-const Step3 = ({ formData, handleChange, prevStep, handleSubmit }) => {
+const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
     const canProceed = formData.reason && formData.documents;
     const today = new Date();
-    formData.date = `${today.getDate}/${today.getMonth + 1}/${today.getFullYear}`;
+    const date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+    formData.date = date;
 
     return (
         <div className="step">
@@ -260,4 +187,4 @@ const Step3 = ({ formData, handleChange, prevStep, handleSubmit }) => {
     );
 };
 
-export default FinanceSchema;
+export default CertificateSchema;

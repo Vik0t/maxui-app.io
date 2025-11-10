@@ -14,17 +14,17 @@ const Login = () => {
                 <Typography.Headline variant='large-strong'>
                     Доброго дня!
                 </Typography.Headline>
-                <Link to="/finance" style={{ textDecoration: 'none'}}>
+                <Link to="/student" style={{ textDecoration: 'none'}}>
                     <Button
                         appearance="neutral"
                         mode="primary"
                         size="large"
                         stretched
                     >
-                        Пользователь
+                        Студент
                     </Button>
                 </Link>
-                <Link to="/Deanery" style={{ textDecoration: 'none'}}>
+                <Link to="/dean/login" style={{ textDecoration: 'none'}}>
                     <Button
                         appearance="neutral"
                         mode="secondary"
