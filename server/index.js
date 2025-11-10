@@ -25,7 +25,7 @@ let deans = [
     id: 1,
     username: 'dean',
     // Password is 'dean123' hashed
-    password: '$2a$10$8K1p/a0dURXAm7QiTRqUzuN0/SpuDMaM1YW8CjHtu28vLMswtsOyG'
+    password: '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa'
   }
 ];
 
