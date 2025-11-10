@@ -15,9 +15,10 @@ const ApplicationsList = () => {
         loadApplications();
     }, [type]);
 
-    const loadApplications = () => {
+    const loadApplications = async () => {
         try {
-            const apps = getApplicationsByType(type);
+            setLoading(true);
+            const apps = await getApplicationsByType(type);
             setApplications(apps);
             setLoading(false);
         } catch (error) {
@@ -26,12 +27,13 @@ const ApplicationsList = () => {
         }
     };
 
-    const handleStatusChange = (id, status) => {
+    const handleStatusChange = async (id, status) => {
         try {
-            updateApplicationStatus(id, status);
+            await updateApplicationStatus(id, status);
             loadApplications(); // Reload applications to reflect changes
         } catch (error) {
             console.error('Error updating application status:', error);
+            alert('Error updating application status: ' + error.message);
         }
     };
 

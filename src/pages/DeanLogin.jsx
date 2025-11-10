@@ -22,13 +22,16 @@ const DeanLogin = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Use API function for authentication
-        if (authenticateDean(loginData.username, loginData.password)) {
-            // Successful login - redirect to dean board
-            navigate('/dean/board');
-        } else {
+        try {
+            // Use API function for authentication
+            const response = await authenticateDean(loginData.username, loginData.password);
+            if (response.success) {
+                // Successful login - redirect to dean board
+                navigate('/dean/board');
+            }
+        } catch (error) {
             setError('Неверный логин или пароль');
         }
     };

@@ -6,15 +6,16 @@ import "../App.css";
 const FinanceSchema = () => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
+        type: 'financial_aid',
         name: '',
         faculty: '',
         courseWithGroup: '',
         contactPhone: '',
-
+        
         passSerial: '',
-        passInfo: '',
+        passPlace: '', // Fixed: was passInfo, should be passPlace
         registration: '',
-
+        
         reason: '',
         documents: '',
         date: ''
@@ -36,32 +37,22 @@ const FinanceSchema = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Save application to localStorage
         try {
+            // Save application to server
             const applicationData = {
                 type: 'financial_aid',
                 ...formData
             };
             
-            // In a real app, you would send this to a server
-            // For now, we'll use localStorage
-            const applications = JSON.parse(localStorage.getItem('student_applications') || '[]');
-            const newApplication = {
-                id: Date.now(),
-                ...applicationData,
-                timestamp: new Date().toISOString(),
-                status: 'pending'
-            };
-            applications.push(newApplication);
-            localStorage.setItem('student_applications', JSON.stringify(applications));
+            await addApplication(applicationData);
             
             console.log('Form submitted:', formData);
             alert('Заявление успешно отправлено!');
         } catch (error) {
             console.error('Error saving application:', error);
-            alert('Ошибка при отправке заявления');
+            alert('Ошибка при отправке заявления: ' + error.message);
         }
     };
     

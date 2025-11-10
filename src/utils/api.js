@@ -1,113 +1,134 @@
 // Utility functions for handling applications data
-const APPLICATIONS_KEY = 'student_applications';
-const DEAN_USER_KEY = 'dean_user';
+//const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
 
-// Initialize with some default data if empty
-const initializeData = () => {
-  if (!localStorage.getItem(APPLICATIONS_KEY)) {
-    localStorage.setItem(APPLICATIONS_KEY, JSON.stringify([]));
-  }
+// Store JWT token
+let authToken = null;
+
+// Set authentication token
+export const setAuthToken = (token) => {
+  authToken = token;
+};
+
+// Get authentication token
+export const getAuthToken = () => {
+  return authToken;
+};
+
+// API request helper
+const apiRequest = async (endpoint, options = {}) => {
+  const url = `${API_BASE_URL}${endpoint}`;
   
-  if (!localStorage.getItem(DEAN_USER_KEY)) {
-    localStorage.setItem(DEAN_USER_KEY, JSON.stringify({
-      username: 'dean',
-      password: 'dean123' // In a real app, this would be hashed
-    }));
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(authToken && { 'Authorization': `Bearer ${authToken}` })
+    },
+    ...options
+  };
+  
+  try {
+    const response = await fetch(url, config);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error || 'Server error');
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
+  }
+};
+
+// Dean authentication
+export const authenticateDean = async (username, password) => {
+  try {
+    const response = await apiRequest('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username, password })
+    });
+    
+    if (response.success) {
+      setAuthToken(response.token);
+      return response;
+    }
+    
+    throw new Error(response.error || 'Authentication failed');
+  } catch (error) {
+    console.error('Error authenticating dean:', error);
+    throw error;
   }
 };
 
 // Get all applications
-export const getApplications = () => {
-  initializeData();
+export const getApplications = async () => {
   try {
-    const applications = JSON.parse(localStorage.getItem(APPLICATIONS_KEY) || '[]');
-    return applications;
+    const response = await apiRequest('/applications');
+    return response.applications || [];
   } catch (error) {
-    console.error('Error reading applications from localStorage:', error);
+    console.error('Error fetching applications:', error);
+    return [];
+  }
+};
+
+// Get applications by type
+export const getApplicationsByType = async (type) => {
+  try {
+    const response = await apiRequest(`/applications/type/${type}`);
+    return response.applications || [];
+  } catch (error) {
+    console.error('Error fetching applications by type:', error);
     return [];
   }
 };
 
 // Add a new application
-export const addApplication = (application) => {
-  initializeData();
+export const addApplication = async (application) => {
   try {
-    const applications = getApplications();
-    const newApplication = {
-      id: Date.now(), // Simple ID generation
-      ...application,
-      timestamp: new Date().toISOString(),
-      status: 'pending' // pending, approved, rejected
-    };
-    applications.push(newApplication);
-    localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(applications));
-    return newApplication;
+    const response = await apiRequest('/applications', {
+      method: 'POST',
+      body: JSON.stringify(application)
+    });
+    
+    if (response.success) {
+      return response.application;
+    }
+    
+    throw new Error(response.error || 'Failed to save application');
   } catch (error) {
-    console.error('Error saving application to localStorage:', error);
+    console.error('Error saving application:', error);
     throw error;
   }
 };
 
 // Update application status
-export const updateApplicationStatus = (id, status) => {
-  initializeData();
+export const updateApplicationStatus = async (id, status) => {
   try {
-    const applications = getApplications();
-    const updatedApplications = applications.map(app => 
-      app.id === id ? { ...app, status } : app
-    );
-    localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(updatedApplications));
-    return updatedApplications.find(app => app.id === id);
+    const response = await apiRequest(`/applications/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status })
+    });
+    
+    if (response.success) {
+      return response.application;
+    }
+    
+    throw new Error(response.error || 'Failed to update application status');
   } catch (error) {
     console.error('Error updating application status:', error);
     throw error;
   }
 };
 
-// Get applications by type
-export const getApplicationsByType = (type) => {
-  const applications = getApplications();
-  return applications.filter(app => app.type === type);
-};
-
 // Get applications statistics
-export const getApplicationsStats = () => {
-  const applications = getApplications();
-  
-  const total = applications.length;
-  const pending = applications.filter(app => app.status === 'pending').length;
-  const approved = applications.filter(app => app.status === 'approved').length;
-  const rejected = applications.filter(app => app.status === 'rejected').length;
-  
-  // Count by type
-  const financialAidCount = applications.filter(app => app.type === 'financial_aid').length;
-  const certificateCount = applications.filter(app => app.type === 'certificate').length;
-  
-  // For student count, we'll use a simple approach
-  // In a real app, this would come from a separate students database
-  const studentCount = Math.max(1000, total * 5); // Estimate at least 1000 students
-  
-  return {
-    total,
-    pending,
-    approved,
-    rejected,
-    financialAid: financialAidCount,
-    certificates: certificateCount,
-    studentCount
-  };
-};
-
-// Dean authentication
-export const authenticateDean = (username, password) => {
+export const getApplicationsStats = async () => {
   try {
-    const deanUser = JSON.parse(localStorage.getItem(DEAN_USER_KEY) || '{}');
-    return deanUser.username === username && deanUser.password === password;
+    const response = await apiRequest('/applications/stats');
+    return response.stats || {};
   } catch (error) {
-    console.error('Error authenticating dean:', error);
-    return false;
+    console.error('Error fetching applications stats:', error);
+    return {};
   }
 };
-
-// Initialize data on module load
-initializeData();

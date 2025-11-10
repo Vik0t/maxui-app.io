@@ -19,9 +19,17 @@ const DeanBoard = () => {
 
     useEffect(() => {
         // Fetch statistics when component mounts
-        const stats = getApplicationsStats();
-        setStats(stats);
+        loadStats();
     }, []);
+
+    const loadStats = async () => {
+        try {
+            const stats = await getApplicationsStats();
+            setStats(stats);
+        } catch (error) {
+            console.error('Error loading stats:', error);
+        }
+    };
 
     const handleLogout = () => {
         // In a real app, you would clear the user session here
