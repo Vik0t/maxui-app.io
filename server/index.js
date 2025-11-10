@@ -9,7 +9,12 @@ const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'max_app_secret_key';
 
 // Middleware
-app.use(cors());
+// Replace the existing app.use(cors()); line with this:
+app.use(cors({
+  origin: ['https://vik0t.github.io', 'http://localhost:5173', 'http://localhost:3001'],
+  credentials: true
+}));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
