@@ -1,13 +1,23 @@
 // Utility functions for handling applications data
-const API_BASE_URL = 'http://localhost:3001/api';
-//const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
+//const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
 
 // Store JWT token
-let authToken = null;
+let authToken = localStorage.getItem('authToken') || null;
 
 // Set authentication token
 export const setAuthToken = (token) => {
   authToken = token;
+  if (token) {
+    localStorage.setItem('authToken', token);
+  } else {
+    localStorage.removeItem('authToken');
+  }
+};
+
+// Clear authentication token
+export const clearAuthToken = () => {
+  setAuthToken(null);
 };
 
 // Get authentication token

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, Input } from "@maxhub/max-ui";
+import { addApplication } from "../utils/api";
 import "../App.css";
 
 const FinanceSchema = () => {

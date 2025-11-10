@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography } from "@maxhub/max-ui";
 import { useNavigate } from "react-router-dom";
-import { getApplicationsStats, getApplicationsByType } from "../utils/api";
+import { getApplicationsStats, getApplicationsByType, clearAuthToken } from "../utils/api";
 import "../App.css";
 
 const DeanBoard = () => {
@@ -32,7 +32,9 @@ const DeanBoard = () => {
     };
 
     const handleLogout = () => {
-        // In a real app, you would clear the user session here
+        // Clear the authentication token
+        clearAuthToken();
+        // Navigate to login page
         navigate('/');
     };
 
