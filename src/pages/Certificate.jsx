@@ -34,8 +34,31 @@ const CertificateSchema = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        // Here you would typically send the data to a server
+        // Save application to localStorage
+        try {
+            const applicationData = {
+                type: 'certificate',
+                ...formData
+            };
+            
+            // In a real app, you would send this to a server
+            // For now, we'll use localStorage
+            const applications = JSON.parse(localStorage.getItem('student_applications') || '[]');
+            const newApplication = {
+                id: Date.now(),
+                ...applicationData,
+                timestamp: new Date().toISOString(),
+                status: 'pending'
+            };
+            applications.push(newApplication);
+            localStorage.setItem('student_applications', JSON.stringify(applications));
+            
+            console.log('Form submitted:', formData);
+            alert('Заявление успешно отправлено!');
+        } catch (error) {
+            console.error('Error saving application:', error);
+            alert('Ошибка при отправке заявления');
+        }
     };
     
     return (

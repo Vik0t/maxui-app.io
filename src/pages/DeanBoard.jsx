@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography } from "@maxhub/max-ui";
 import { useNavigate } from "react-router-dom";
+import { getApplicationsStats, getApplicationsByType } from "../utils/api";
 import "../App.css";
 
 const DeanBoard = () => {
     const navigate = useNavigate();
+    const [stats, setStats] = useState({
+        financialAid: 0,
+        certificates: 0,
+        total: 0,
+        studentCount: 1000,
+        approved: 0,
+        rejected: 0,
+        pending: 0
+    });
+
+    useEffect(() => {
+        // Fetch statistics when component mounts
+        const stats = getApplicationsStats();
+        setStats(stats);
+    }, []);
 
     const handleLogout = () => {
         // In a real app, you would clear the user session here
@@ -43,13 +59,14 @@ const DeanBoard = () => {
                                         mode="primary"
                                         size="large"
                                         stretched
+                                        onClick={() => navigate('/dean/applications/financial_aid')}
                                     >
                                         <Flex direction="row" justify="space-between" align="center">
                                             <Typography.Headline variant="medium-strong">
                                                 Заявки на матпомощь
                                             </Typography.Headline>
                                             <Typography.Headline variant="medium-strong">
-                                                5
+                                                {stats.financialAid}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
@@ -59,13 +76,14 @@ const DeanBoard = () => {
                                         mode="primary"
                                         size="large"
                                         stretched
+                                        onClick={() => navigate('/dean/applications/certificate')}
                                     >
                                         <Flex direction="row" justify="space-between" align="center">
                                             <Typography.Headline variant="medium-strong">
                                                 Заявки на справки
                                             </Typography.Headline>
                                             <Typography.Headline variant="medium-strong">
-                                                12
+                                                {stats.certificates}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
@@ -89,7 +107,7 @@ const DeanBoard = () => {
                                                 Всего студентов
                                             </Typography.Headline>
                                             <Typography.Headline variant="medium-strong">
-                                                1,247
+                                                {stats.studentCount}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
@@ -105,7 +123,7 @@ const DeanBoard = () => {
                                                 Обработано заявок
                                             </Typography.Headline>
                                             <Typography.Headline variant="medium-strong">
-                                                42
+                                                {stats.approved + stats.rejected}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>

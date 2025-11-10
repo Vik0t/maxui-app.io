@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, Input } from "@maxhub/max-ui";
 import { useNavigate } from "react-router-dom";
+import { authenticateDean } from "../utils/api";
 import "../App.css";
 
 const DeanLogin = () => {
@@ -23,8 +24,8 @@ const DeanLogin = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Simple validation - in a real app, this would be a server-side check
-        if (loginData.username === 'admin' && loginData.password === 'admin') {
+        // Use API function for authentication
+        if (authenticateDean(loginData.username, loginData.password)) {
             // Successful login - redirect to dean board
             navigate('/dean/board');
         } else {

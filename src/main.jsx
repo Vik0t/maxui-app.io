@@ -6,6 +6,7 @@ import FinanceSchema from './pages/Finance';
 import CertificateSchema from './pages/Certificate';
 import DeanLogin from './pages/DeanLogin';
 import DeanBoard from './pages/DeanBoard';
+import ApplicationsList from './pages/ApplicationsList';
 
 const Main = () => {
   return (
@@ -16,6 +17,7 @@ const Main = () => {
       <Route path='/certificate' element={<CertificateSchema />} />
       <Route path='/dean/login' element={<DeanLogin />} />
       <Route path='/dean/board' element={<DeanBoard />} />
+      <Route path='/dean/applications/:type' element={<ApplicationsList />} />
     </Routes>
   );
 }
