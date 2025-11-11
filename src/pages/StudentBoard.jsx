@@ -15,36 +15,28 @@ const StudentBoard = () => {
                                 Панель студента
                             </Typography.Headline>
                             
-                            <Flex direction="row" gap={16} wrap="wrap">
-                                <Link to="/finance" style={{ textDecoration: 'none', width: 'calc(50% - 8px)' }}>
+                            <Flex direction="column" gap={16} wrap="wrap">
+                                <Link to="/finance" style={{ textDecoration: 'none'}}>
                                     <Button
-                                        appearance="themed"
-                                        mode="primary"
+                                        appearance="neutral"
+                                        mode="secondary"
                                         size="large"
                                         stretched
-                                        style={{ height: '120px' }}
+                                        className="studentBoardButton"
                                     >
-                                        <Flex direction="column" gap={8} align="center">
-                                            <Typography.Headline variant="medium-strong">
-                                                Подать заявление на матпомощь
-                                            </Typography.Headline>
-                                        </Flex>
+                                        Подать заявление на матпомощь
                                     </Button>
                                 </Link>
                                 
-                                <Link to="/certificate" style={{ textDecoration: 'none', width: 'calc(50% - 8px)' }}>
+                                <Link to="/certificate" style={{ textDecoration: 'none'}}>
                                     <Button
-                                        appearance="themed"
-                                        mode="primary"
+                                        appearance="neutral"
+                                        mode="secondary"
                                         size="large"
                                         stretched
-                                        style={{ height: '120px' }}
+                                        className="studentBoardButton"
                                     >
-                                        <Flex direction="column" gap={8} align="center">
-                                            <Typography.Headline variant="medium-strong">
-                                                Заявление на справку об обучении
-                                            </Typography.Headline>
-                                        </Flex>
+                                        Заявление на справку об обучении
                                     </Button>
                                 </Link>
                             </Flex>

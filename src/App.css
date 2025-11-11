@@ -8,3 +8,20 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.financeInput {
+  width: 300px;
+}
+
+.financeGrid {
+  width: 100%;
+}
+
+.loginGrid {
+  width: 200px;
+}
+
+.studentBoardButton {
+  width: 350px;
+  height: 55px;
+}
