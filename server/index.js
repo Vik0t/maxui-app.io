@@ -29,6 +29,57 @@ let deans = [
   }
 ];
 
+// Financial aid payment rules
+const financialAidRules = {
+  "fixed": {
+    "беременность": {"value": 15000},
+    "тяжелое финансовое положение семьи": {"value": 10000}
+  },
+  "not_fixed": {
+    "затраты на поездку за пределами новосибирской области": {
+      "percentage": 50,
+      "max_value": 10000
+    }
+  }
+};
+
+// Calculate payment for a financial aid application
+const calculatePayment = (application, rules) => {
+  const reason = application.reason.toLowerCase();
+  const expenses = application.expenses || 0;
+
+  if (rules.fixed[reason]) {
+    return rules.fixed[reason].value;
+  } else if (rules.not_fixed[reason]) {
+    const rule = rules.not_fixed[reason];
+    const value = expenses * rule.percentage / 100;
+    return Math.min(value, rule.max_value);
+  } else {
+    return 0;
+  }
+};
+
+// Process all financial aid applications and calculate payments
+const processApplications = (applications, rules) => {
+  const results = [];
+  let total = 0;
+
+  for (const app of applications) {
+    if (app.type === 'financial_aid') {
+      const amount = calculatePayment(app, rules);
+      results.push({
+        id: app.id,
+        name: app.name,
+        reason: app.reason,
+        amount: amount
+      });
+      total += amount;
+    }
+  }
+
+  return { results, total };
+};
+
 // Helper function to generate JWT token
 const generateToken = (user) => {
   return jwt.sign(
@@ -141,6 +192,21 @@ app.post('/api/applications', (req, res) => {
     res.status(201).json({
       success: true,
       application: newApplication
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Calculate financial aid payments
+app.get('/api/applications/financial-aid/payments', authenticateToken, (req, res) => {
+  try {
+    const { results, total } = processApplications(applications, financialAidRules);
+    
+    res.json({
+      success: true,
+      payments: results,
+      total: total
     });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });

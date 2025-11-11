@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography } from "@maxhub/max-ui";
 import { useNavigate } from "react-router-dom";
-import { getApplicationsStats, getApplicationsByType, clearAuthToken } from "../utils/api";
+import { getApplicationsStats, getApplicationsByType, clearAuthToken, getFinancialAidPayments } from "../utils/api";
 import "../App.css";
 
 const DeanBoard = () => {
@@ -16,10 +16,15 @@ const DeanBoard = () => {
         rejected: 0,
         pending: 0
     });
+    
+    const [payments, setPayments] = useState({
+        total: 0
+    });
 
     useEffect(() => {
-        // Fetch statistics when component mounts
+        // Fetch statistics and payments when component mounts
         loadStats();
+        loadPayments();
     }, []);
 
     const loadStats = async () => {
@@ -28,6 +33,17 @@ const DeanBoard = () => {
             setStats(stats);
         } catch (error) {
             console.error('Error loading stats:', error);
+        }
+    };
+
+    const loadPayments = async () => {
+        try {
+            const paymentsData = await getFinancialAidPayments();
+            setPayments({
+                total: paymentsData.total || 0
+            });
+        } catch (error) {
+            console.error('Error loading payments:', error);
         }
     };
 
@@ -134,6 +150,31 @@ const DeanBoard = () => {
                                             </Typography.Headline>
                                             <Typography.Headline variant="medium-strong">
                                                 {stats.approved + stats.rejected}
+                                            </Typography.Headline>
+                                        </Flex>
+                                    </Button>
+                                </Flex>
+                            </Flex>
+                            
+                            <Flex direction="column" gap={16}>
+                                <Typography.Headline variant="medium-strong">
+                                    Финансовая помощь
+                                </Typography.Headline>
+                                
+                                <Flex direction="column" gap={12}>
+                                    <Button
+                                        appearance="themed"
+                                        mode="secondary"
+                                        size="large"
+                                        stretched
+                                        onClick={() => navigate('/dean/payments')}
+                                    >
+                                        <Flex direction="row" justify="space-between" align="center">
+                                            <Typography.Headline variant="medium">
+                                                Общая сумма выплат
+                                            </Typography.Headline>
+                                            <Typography.Headline variant="medium-strong">
+                                                {payments.total} руб
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>

@@ -227,7 +227,7 @@ const Step2 = ({ formData, handleChange, nextStep, prevStep }) => {
 const Step3 = ({ formData, handleChange, prevStep, handleSubmit }) => {
     const canProceed = formData.reason && formData.documents;
     const today = new Date();
-    formData.date = `${today.getDate}/${today.getMonth + 1}/${today.getFullYear}`;
+    formData.date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
 
     return (
         <div className="step">
@@ -242,6 +242,13 @@ const Step3 = ({ formData, handleChange, prevStep, handleSubmit }) => {
                     mode="secondary"
                     placeholder="Введите причину"
                     required
+                />
+                <Input
+                    onChange={handleChange}
+                    name="expenses"
+                    mode="secondary"
+                    placeholder="Введите сумму расходов (если применимо)"
+                    type="number"
                 />
                 <Input
                     onChange={handleChange}

@@ -1,6 +1,6 @@
 // Utility functions for handling applications data
-//const API_BASE_URL = 'http://localhost:3001/api';
-const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
+const API_BASE_URL = 'http://localhost:3001/api';
+//const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
 
 // Store JWT token
 let authToken = localStorage.getItem('authToken') || null;
@@ -140,5 +140,16 @@ export const getApplicationsStats = async () => {
   } catch (error) {
     console.error('Error fetching applications stats:', error);
     return {};
+  }
+};
+
+// Get financial aid payments
+export const getFinancialAidPayments = async () => {
+  try {
+    const response = await apiRequest('/applications/financial-aid/payments');
+    return response;
+  } catch (error) {
+    console.error('Error fetching financial aid payments:', error);
+    return { payments: [], total: 0 };
   }
 };
