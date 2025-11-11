@@ -65,7 +65,7 @@ const processApplications = (applications, rules) => {
   let total = 0;
 
   for (const app of applications) {
-    if (app.type === 'financial_aid') {
+    if (app.type === 'financial_aid' && app.status === 'approved') {
       const amount = calculatePayment(app, rules);
       results.push({
         id: app.id,

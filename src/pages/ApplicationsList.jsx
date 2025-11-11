@@ -62,9 +62,9 @@ const ApplicationsList = () => {
     return (
         <div className="general">
             <MaxUI>
-                <Panel centeredX centeredY style={{ height: '100vh' }}>
+                <Panel>
                     <Container fullWidth={true}>
-                        <Flex direction="column" gap={20}>
+                        <Flex direction="column" gap={20} style={{ padding: '20px 0' }}>
                             <Flex direction="row" justify="space-between" align="center">
                                 <Typography.Headline variant='large-strong'>
                                     {getTypeTitle()}
@@ -90,63 +90,69 @@ const ApplicationsList = () => {
                             ) : (
                                 <Flex direction="column" gap={16}>
                                     {applications.map((app) => (
-                                        <Flex 
-                                            key={app.id} 
-                                            direction="column" 
-                                            gap={12} 
-                                            style={{ 
-                                                padding: '16px', 
-                                                border: '1px solid var(--color-border-primary)', 
-                                                borderRadius: '8px' 
+                                        <div
+                                            key={app.id}
+                                            style={{
+                                                padding: '16px',
+                                                border: '1px solid var(--color-border-primary)',
+                                                borderRadius: '8px',
+                                                backgroundColor: 'var(--color-background-primary)'
                                             }}
                                         >
-                                            <Typography.Headline variant="medium-strong">
-                                                {app.name}
-                                            </Typography.Headline>
-                                            
-                                            <Flex direction="column" gap={8}>
-                                                <Typography.Headline variant="small">
-                                                    Факультет: {app.faculty}
+                                            <Flex direction="column" gap={12}>
+                                                <Typography.Headline variant="medium-strong">
+                                                    {app.name}
                                                 </Typography.Headline>
-                                                <Typography.Headline variant="small">
-                                                    Курс и группа: {app.courseWithGroup}
-                                                </Typography.Headline>
-                                                <Typography.Headline variant="small">
-                                                    Телефон: {app.contactPhone}
-                                                </Typography.Headline>
-                                                <Typography.Headline variant="small">
-                                                    {getTypeDescription(app)}
-                                                </Typography.Headline>
-                                                <Typography.Headline variant="small">
-                                                    Дата подачи: {new Date(app.timestamp).toLocaleString()}
-                                                </Typography.Headline>
-                                                <Typography.Headline variant="small">
-                                                    Статус: {app.status === 'pending' ? 'Ожидает' : 
-                                                             app.status === 'approved' ? 'Одобрено' : 'Отклонено'}
-                                                </Typography.Headline>
-                                            </Flex>
-                                            
-                                            {app.status === 'pending' && (
-                                                <Flex direction="row" gap={12}>
-                                                    <Button
-                                                        appearance="themed"
-                                                        mode="positive"
-                                                        size="medium"
-                                                        onClick={() => handleStatusChange(app.id, 'approved')}
-                                                    >
-                                                        Одобрить
-                                                    </Button>
-                                                    <Button
-                                                        appearance="themed"
-                                                        mode="negative"
-                                                        size="medium"
-                                                        onClick={() => handleStatusChange(app.id, 'rejected')}
-                                                    >
-                                                        Отклонить
-                                                    </Button>
+                                                
+                                                <Flex direction="column" gap={8}>
+                                                    <Typography.Headline variant="small">
+                                                        Факультет: {app.faculty}
+                                                    </Typography.Headline>
+                                                    <Typography.Headline variant="small">
+                                                        Курс и группа: {app.courseWithGroup}
+                                                    </Typography.Headline>
+                                                    <Typography.Headline variant="small">
+                                                        Телефон: {app.contactPhone}
+                                                    </Typography.Headline>
+                                                    <Typography.Headline variant="small">
+                                                        {getTypeDescription(app)}
+                                                    </Typography.Headline>
+                                                    {app.expenses && (
+                                                        <Typography.Headline variant="small">
+                                                            Расходы: {app.expenses} руб
+                                                        </Typography.Headline>
+                                                    )}
+                                                    <Typography.Headline variant="small">
+                                                        Дата подачи: {new Date(app.timestamp).toLocaleString()}
+                                                    </Typography.Headline>
+                                                    <Typography.Headline variant="small">
+                                                        Статус: {app.status === 'pending' ? 'Ожидает' :
+                                                                 app.status === 'approved' ? 'Одобрено' : 'Отклонено'}
+                                                    </Typography.Headline>
                                                 </Flex>
-                                            )}
-                                        </Flex>
+                                                
+                                                {app.status === 'pending' && (
+                                                    <Flex direction="row" gap={12}>
+                                                        <Button
+                                                            appearance="themed"
+                                                            mode="positive"
+                                                            size="medium"
+                                                            onClick={() => handleStatusChange(app.id, 'approved')}
+                                                        >
+                                                            Одобрить
+                                                        </Button>
+                                                        <Button
+                                                            appearance="themed"
+                                                            mode="negative"
+                                                            size="medium"
+                                                            onClick={() => handleStatusChange(app.id, 'rejected')}
+                                                        >
+                                                            Отклонить
+                                                        </Button>
+                                                    </Flex>
+                                                )}
+                                            </Flex>
+                                        </div>
                                     ))}
                                 </Flex>
                             )}

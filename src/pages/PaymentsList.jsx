@@ -52,44 +52,53 @@ const PaymentsList = () => {
                                 <Typography.Headline variant="medium">
                                     Загрузка...
                                 </Typography.Headline>
-                            ) : payments.length === 0 ? (
-                                <Typography.Headline variant="medium">
-                                    Нет заявок на матпомощь
-                                </Typography.Headline>
                             ) : (
                                 <Flex direction="column" gap={16}>
-                                    {payments.map((payment) => (
-                                        <Flex 
-                                            key={payment.id} 
-                                            direction="column" 
-                                            gap={12} 
-                                            style={{ 
-                                                padding: '16px', 
-                                                border: '1px solid var(--color-border-primary)', 
-                                                borderRadius: '8px' 
-                                            }}
-                                        >
-                                            <Typography.Headline variant="medium-strong">
-                                                {payment.name}
-                                            </Typography.Headline>
-                                            
-                                            <Flex direction="column" gap={8}>
-                                                <Typography.Headline variant="small">
-                                                    Причина: {payment.reason}
-                                                </Typography.Headline>
-                                                <Typography.Headline variant="small">
-                                                    Сумма выплаты: {payment.amount} руб
-                                                </Typography.Headline>
-                                            </Flex>
-                                        </Flex>
-                                    ))}
+                                    <Typography.Headline variant="small">
+                                        * Рассчитываются только одобренные заявки на матпомощь
+                                    </Typography.Headline>
                                     
-                                    <Flex 
-                                        direction="column" 
-                                        gap={12} 
-                                        style={{ 
-                                            padding: '16px', 
-                                            border: '1px solid var(--color-border-primary)', 
+                                    {payments.length === 0 ? (
+                                        <Typography.Headline variant="medium">
+                                            Нет одобренных заявок на матпомощь
+                                        </Typography.Headline>
+                                    ) : (
+                                        <Flex direction="column" gap={16}>
+                                            {payments.map((payment) => (
+                                                <div
+                                                    key={payment.id}
+                                                    style={{
+                                                        padding: '16px',
+                                                        border: '1px solid var(--color-border-primary)',
+                                                        borderRadius: '8px',
+                                                        backgroundColor: 'var(--color-background-primary)'
+                                                    }}
+                                                >
+                                                    <Flex direction="column" gap={12}>
+                                                        <Typography.Headline variant="medium-strong">
+                                                            {payment.name}
+                                                        </Typography.Headline>
+                                                        
+                                                        <Flex direction="column" gap={8}>
+                                                            <Typography.Headline variant="small">
+                                                                Причина: {payment.reason}
+                                                            </Typography.Headline>
+                                                            <Typography.Headline variant="small">
+                                                                Сумма выплаты: {payment.amount} руб
+                                                            </Typography.Headline>
+                                                        </Flex>
+                                                    </Flex>
+                                                </div>
+                                            ))}
+                                        </Flex>
+                                    )}
+                                    
+                                    <Flex
+                                        direction="column"
+                                        gap={12}
+                                        style={{
+                                            padding: '16px',
+                                            border: '1px solid var(--color-border-primary)',
                                             borderRadius: '8px',
                                             backgroundColor: 'var(--color-background-secondary)'
                                         }}
