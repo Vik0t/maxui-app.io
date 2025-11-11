@@ -31,10 +31,10 @@ const PaymentsList = () => {
     return (
         <div className="general">
             <MaxUI>
-                <Panel centeredX centeredY style={{ height: '100vh' }}>
+                <Panel style={{ height: '100vh', overflowY: 'auto' }}>
                     <Container fullWidth={true}>
-                        <Flex direction="column" gap={20}>
-                            <Flex direction="row" justify="space-between" align="center">
+                        <Flex direction="column" gap={20} style={{ padding: '20px 0', alignItems: 'center' }}>
+                            <Flex direction="row" justify="space-between" align="center" style={{ width: '100%', maxWidth: '800px' }}>
                                 <Typography.Headline variant='large-strong'>
                                     Расчет выплат по матпомощи
                                 </Typography.Headline>
@@ -53,7 +53,7 @@ const PaymentsList = () => {
                                     Загрузка...
                                 </Typography.Headline>
                             ) : (
-                                <Flex direction="column" gap={16}>
+                                <Flex direction="column" gap={16} style={{ width: '100%', maxWidth: '800px' }}>
                                     <Typography.Headline variant="small">
                                         * Рассчитываются только одобренные заявки на матпомощь
                                     </Typography.Headline>
@@ -71,7 +71,8 @@ const PaymentsList = () => {
                                                         padding: '16px',
                                                         border: '1px solid var(--color-border-primary)',
                                                         borderRadius: '8px',
-                                                        backgroundColor: 'var(--color-background-primary)'
+                                                        backgroundColor: 'var(--color-background-primary)',
+                                                        width: '100%'
                                                     }}
                                                 >
                                                     <Flex direction="column" gap={12}>
@@ -100,7 +101,8 @@ const PaymentsList = () => {
                                             padding: '16px',
                                             border: '1px solid var(--color-border-primary)',
                                             borderRadius: '8px',
-                                            backgroundColor: 'var(--color-background-secondary)'
+                                            backgroundColor: 'var(--color-background-secondary)',
+                                            width: '100%'
                                         }}
                                     >
                                         <Typography.Headline variant="medium-strong">

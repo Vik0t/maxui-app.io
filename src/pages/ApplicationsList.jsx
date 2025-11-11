@@ -62,10 +62,10 @@ const ApplicationsList = () => {
     return (
         <div className="general">
             <MaxUI>
-                <Panel>
+                <Panel style={{ height: '100vh', overflowY: 'auto' }}>
                     <Container fullWidth={true}>
-                        <Flex direction="column" gap={20} style={{ padding: '20px 0' }}>
-                            <Flex direction="row" justify="space-between" align="center">
+                        <Flex direction="column" gap={20} style={{ padding: '20px 0', alignItems: 'center' }}>
+                            <Flex direction="row" justify="space-between" align="center" style={{ width: '100%', maxWidth: '800px' }}>
                                 <Typography.Headline variant='large-strong'>
                                     {getTypeTitle()}
                                 </Typography.Headline>
@@ -88,7 +88,7 @@ const ApplicationsList = () => {
                                     Нет заявок
                                 </Typography.Headline>
                             ) : (
-                                <Flex direction="column" gap={16}>
+                                <Flex direction="column" gap={16} style={{ width: '100%', maxWidth: '800px' }}>
                                     {applications.map((app) => (
                                         <div
                                             key={app.id}
@@ -96,7 +96,8 @@ const ApplicationsList = () => {
                                                 padding: '16px',
                                                 border: '1px solid var(--color-border-primary)',
                                                 borderRadius: '8px',
-                                                backgroundColor: 'var(--color-background-primary)'
+                                                backgroundColor: 'var(--color-background-primary)',
+                                                width: '100%'
                                             }}
                                         >
                                             <Flex direction="column" gap={12}>
