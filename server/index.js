@@ -241,10 +241,23 @@ app.post('/api/auth/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Error during authentication:', error);
+    // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
       return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    } else if (error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
+    } else if (error.code === 'ECONNRESET') {
+      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
+    } else if (error.code === 'ETIMEDOUT') {
+      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
+    } else if (error.code === '28P01') {
+      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
+    } else if (error.code === '3D000') {
+      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
+    } else if (error.code === '28000') {
+      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + error.message });
   }
 });
 
@@ -258,10 +271,23 @@ app.get('/api/applications', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching applications:', error);
+    // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
       return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    } else if (error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
+    } else if (error.code === 'ECONNRESET') {
+      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
+    } else if (error.code === 'ETIMEDOUT') {
+      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
+    } else if (error.code === '28P01') {
+      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
+    } else if (error.code === '3D000') {
+      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
+    } else if (error.code === '28000') {
+      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + error.message });
   }
 });
 
@@ -277,10 +303,23 @@ app.get('/api/applications/type/:type', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching applications by type:', error);
+    // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
       return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    } else if (error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
+    } else if (error.code === 'ECONNRESET') {
+      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
+    } else if (error.code === 'ETIMEDOUT') {
+      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
+    } else if (error.code === '28P01') {
+      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
+    } else if (error.code === '3D000') {
+      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
+    } else if (error.code === '28000') {
+      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + error.message });
   }
 });
 
@@ -323,10 +362,23 @@ app.post('/api/applications', async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating application:', error);
+    // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
       return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    } else if (error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
+    } else if (error.code === 'ECONNRESET') {
+      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
+    } else if (error.code === 'ETIMEDOUT') {
+      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
+    } else if (error.code === '28P01') {
+      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
+    } else if (error.code === '3D000') {
+      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
+    } else if (error.code === '28000') {
+      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + error.message });
   }
 });
 
@@ -344,10 +396,23 @@ app.get('/api/applications/financial-aid/payments', authenticateToken, async (re
     });
   } catch (error) {
     console.error('Error calculating payments:', error);
+    // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
       return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    } else if (error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
+    } else if (error.code === 'ECONNRESET') {
+      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
+    } else if (error.code === 'ETIMEDOUT') {
+      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
+    } else if (error.code === '28P01') {
+      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
+    } else if (error.code === '3D000') {
+      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
+    } else if (error.code === '28000') {
+      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + error.message });
   }
 });
 
@@ -373,10 +438,23 @@ app.put('/api/applications/:id/status', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating application status:', error);
+    // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
       return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    } else if (error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
+    } else if (error.code === 'ECONNRESET') {
+      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
+    } else if (error.code === 'ETIMEDOUT') {
+      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
+    } else if (error.code === '28P01') {
+      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
+    } else if (error.code === '3D000') {
+      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
+    } else if (error.code === '28000') {
+      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error: ' + error.message });
   }
 });
 
@@ -436,7 +514,23 @@ app.get('/api/applications/stats', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching application stats:', error);
-    res.status(500).json({ error: 'Server error' });
+    // Handle different types of database errors
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    } else if (error.code === 'ENOTFOUND') {
+      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
+    } else if (error.code === 'ECONNRESET') {
+      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
+    } else if (error.code === 'ETIMEDOUT') {
+      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
+    } else if (error.code === '28P01') {
+      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
+    } else if (error.code === '3D000') {
+      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
+    } else if (error.code === '28000') {
+      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
+    }
+    res.status(500).json({ error: 'Server error: ' + error.message });
   }
 });
 
