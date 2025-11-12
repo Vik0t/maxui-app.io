@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
-import { MaxUI, Panel, Button, Container, Flex, Typography, Input } from "@maxhub/max-ui";
+import { MaxUI, Panel, Button, Container, Flex, Typography, CellList, CellSimple } from "@maxhub/max-ui";
 import { useNavigate, useParams } from "react-router-dom";
 import { getApplicationsByType, updateApplicationStatus } from "../utils/api";
 import "../App.css";
@@ -88,74 +88,33 @@ const ApplicationsList = () => {
                                     Нет заявок
                                 </Typography.Headline>
                             ) : (
-                                <Flex direction="column" gap={16} style={{ width: '100%', maxWidth: '800px' }}>
+                                <CellList filled mode="island" style={{ width: '100%', maxWidth: '800px' }}>
                                     {applications.map((app) => (
-                                        <div
+                                        <CellSimple
                                             key={app.id}
-                                            style={{
-                                                padding: '16px',
-                                                border: '1px solid var(--color-border-primary)',
-                                                borderRadius: '8px',
-                                                backgroundColor: 'var(--color-background-primary)',
-                                                width: '100%'
-                                            }}
-                                        >
-                                            <Flex direction="column" gap={12}>
-                                                <Typography.Headline variant="medium-strong">
-                                                    {app.name}
-                                                </Typography.Headline>
-                                                
-                                                <Flex direction="column" gap={8}>
-                                                    <Typography.Headline variant="small">
+                                            onClick={() => navigate(`/dean/applications/${type}/${app.id}`)}
+                                            showChevron
+                                            title={app.name}
+                                            subtitle={
+                                                <Flex direction="column" gap={4}>
+                                                    <Typography.Body variant="secondary">
                                                         Факультет: {app.faculty}
-                                                    </Typography.Headline>
-                                                    <Typography.Headline variant="small">
+                                                    </Typography.Body>
+                                                    <Typography.Body variant="secondary">
                                                         Курс и группа: {app.courseWithGroup}
-                                                    </Typography.Headline>
-                                                    <Typography.Headline variant="small">
-                                                        Телефон: {app.contactPhone}
-                                                    </Typography.Headline>
-                                                    <Typography.Headline variant="small">
+                                                    </Typography.Body>
+                                                    <Typography.Body variant="secondary">
                                                         {getTypeDescription(app)}
-                                                    </Typography.Headline>
-                                                    {app.expenses && (
-                                                        <Typography.Headline variant="small">
-                                                            Расходы: {app.expenses} руб
-                                                        </Typography.Headline>
-                                                    )}
-                                                    <Typography.Headline variant="small">
-                                                        Дата подачи: {new Date(app.timestamp).toLocaleString()}
-                                                    </Typography.Headline>
-                                                    <Typography.Headline variant="small">
+                                                    </Typography.Body>
+                                                    <Typography.Body variant="secondary">
                                                         Статус: {app.status === 'pending' ? 'Ожидает' :
                                                                  app.status === 'approved' ? 'Одобрено' : 'Отклонено'}
-                                                    </Typography.Headline>
+                                                    </Typography.Body>
                                                 </Flex>
-                                                
-                                                {app.status === 'pending' && (
-                                                    <Flex direction="row" gap={12}>
-                                                        <Button
-                                                            appearance="themed"
-                                                            mode="positive"
-                                                            size="medium"
-                                                            onClick={() => handleStatusChange(app.id, 'approved')}
-                                                        >
-                                                            Одобрить
-                                                        </Button>
-                                                        <Button
-                                                            appearance="themed"
-                                                            mode="negative"
-                                                            size="medium"
-                                                            onClick={() => handleStatusChange(app.id, 'rejected')}
-                                                        >
-                                                            Отклонить
-                                                        </Button>
-                                                    </Flex>
-                                                )}
-                                            </Flex>
-                                        </div>
+                                            }
+                                        />
                                     ))}
-                                </Flex>
+                                </CellList>
                             )}
                         </Flex>
                     </Container>

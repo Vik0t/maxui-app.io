@@ -1,6 +1,6 @@
 // Utility functions for handling applications data
-//const API_BASE_URL = 'http://localhost:3001/api';
-const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
+const API_BASE_URL = 'http://localhost:3001/api';
+// const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
 
 // Store JWT token
 let authToken = localStorage.getItem('authToken') || null;
@@ -129,6 +129,17 @@ export const updateApplicationStatus = async (id, status) => {
   } catch (error) {
     console.error('Error updating application status:', error);
     throw error;
+  }
+};
+
+// Get a single application by ID
+export const getApplicationById = async (id) => {
+  try {
+    const response = await apiRequest(`/applications/${id}`);
+    return response.application || null;
+  } catch (error) {
+    console.error('Error fetching application by ID:', error);
+    return null;
   }
 };
 
