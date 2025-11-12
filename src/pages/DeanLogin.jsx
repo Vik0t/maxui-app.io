@@ -61,6 +61,7 @@ const DeanLogin = () => {
                                         placeholder="Логин"
                                         value={loginData.username}
                                         required
+                                        className="financeInput"
                                     />
                                     <Input
                                         onChange={handleChange}
@@ -70,6 +71,7 @@ const DeanLogin = () => {
                                         type="password"
                                         value={loginData.password}
                                         required
+                                        className="financeInput"
                                     />
                                     <Button
                                         appearance="themed"

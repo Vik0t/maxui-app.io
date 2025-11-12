@@ -38,8 +38,7 @@ const CustomMenu = ({ value, onValueChange, children, onClose }) => {
           value={searchValue}
           mode="secondary"
           style={{
-            backgroundColor: '#4a5568',
-            border: '1px solid #718096',
+            backgroundColor: 'transparent',
             color: 'white',
             paddingRight: '40px',
             margin: '10px 12px',
@@ -198,7 +197,8 @@ const CustomDropdown = ({ onChange, name, initialSelectedOption = '' }) => {
               appearance="neutral"
               mode="secondary"
               style={{ 
-                textDecoration: 'none'
+                textDecoration: 'none',
+                width: 325
               }}
               className='financeInput'
               stretched
