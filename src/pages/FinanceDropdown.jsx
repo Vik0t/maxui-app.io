@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu } from '@headlessui/react';
-import Form from 'react-bootstrap/Form';
 import "@maxhub/max-ui/dist/styles.css";
-import { Button } from "@maxhub/max-ui";
+import { Button, Input } from "@maxhub/max-ui";
 import "../App.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CustomMenu = ({ value, onValueChange, children, onClose }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -33,17 +31,19 @@ const CustomMenu = ({ value, onValueChange, children, onClose }) => {
       }}
     >
       <div style={{ position: 'relative' }}>
-        <Form.Control
+        <Input
           autoFocus
-          className="mx-3 my-2 w-auto"
           placeholder="Поиск"
           onChange={handleSearchChange}
           value={searchValue}
+          mode="secondary"
           style={{
             backgroundColor: '#4a5568',
             border: '1px solid #718096',
             color: 'white',
-            paddingRight: '40px'
+            paddingRight: '40px',
+            margin: '10px 12px',
+            width: 'auto'
           }}
         />
         <button

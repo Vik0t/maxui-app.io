@@ -32,11 +32,33 @@ let deans = [
 // Financial aid payment rules
 const financialAidRules = {
   "fixed": {
-    "беременность": {"value": 15000},
-    "тяжелое финансовое положение семьи": {"value": 10000}
+    "беременность (сроком от 20 недель)": {"value": 15000},
+    "рождение ребёнка (детей)": {"value": 20000},
+    "чрезвычайные происшествия (стихийные бедствия, техногенные аварии, пожар, наводнение и т.п.)": {"value": 10000},
+    "смерть близкого родственника (родителей, супруга, ребенка, родных братьев и сестер, опекуна, попечителя)": {"value": 20000},
+    "признание погибшим или без вести пропавшим родственника - участника сво (мать, отец, супруг, супруга)": {"value": 60000},
+    "заключение брака": {"value": 5000},
+    "получение увечья (ранения, травмы, контузии), в результате которого наступила инвалидность родственника (мать, отец, супруг, супруга) - участника сво": {"value": 40000},
+    "получение увечья (ранения, травмы, контузии), в результате которого наступила инвалидность обучающегося - участника сво": {"value": 50000},
+    "вынужденный выезд с территории курской, белгородской, брянской областей в связи с чрезвычайной ситуацией": {"value": 30000},
+    "санаторно-курортное лечение": {"value": 50000},
+    "компенсация платы за пребывание ребенка в дошкольном образовательном учреждении": {"value": 16000},
+    "наличие ребенка (детей) до 14 лет": {"value": 10000},
+    "наличие родственников (мать, отец, супруг, супруга), являющихся участниками специальной военной операции": {"value": 10000},
+    "обучающийся - участник специальной военной операции": {"value": 15000},
+    "тяжелое материальное положение обучающегося": {"value": 10000},
+    "заболевание обучающегося, требующее дорогостоящего обследования и лечения": {"value": 10000},
+    "студент из неполной семьи, обучающийся по программе бакалавриата или специалитета": {"value": 10000},
+    "студент из многодетной семьи, обучающийся по программе бакалавриата или специалитета": {"value": 10000},
+    "студент, имеющий регистрацию в отдаленном районе г. новосибирска и не проживающий в общежитии": {"value": 5000},
+    "студент, получающий государственную социальную помощь": {"value": 4000},
+    "студент-инвалид (ребенок-инвалид, инвалид с детства, инвалид i, ii, iii групп)": {"value": 15000},
+    "студент из числа детей-сирот и детей, оставшихся без попечения родителей": {"value": 10000},
+    "студент, у которого оба родителя (единственный родитель) являются пенсионерами по старости": {"value": 5000},
+    "студент, у которого оба родителя (единственный родитель) являются инвалидами i или ii группы": {"value": 7000}
   },
   "not_fixed": {
-    "затраты на поездку за пределами новосибирской области": {
+    "компенсация затрат на проезд к постоянному месту жительства и обратно к месту учебы": {
       "percentage": 50,
       "max_value": 10000
     }
@@ -45,18 +67,49 @@ const financialAidRules = {
 
 // Calculate payment for a financial aid application
 const calculatePayment = (application, rules) => {
-  const reason = application.reason.toLowerCase();
-  const expenses = application.expenses || 0;
-
-  if (rules.fixed[reason]) {
-    return rules.fixed[reason].value;
-  } else if (rules.not_fixed[reason]) {
-    const rule = rules.not_fixed[reason];
+  // Extract the text part after the number (e.g., "1.1 Беременность (сроком от 20 недель)" -> "Беременность (сроком от 20 недель)")
+  let reason = application.reason;
+  const numberPrefixMatch = reason.match(/^\d+\.\d+\s+(.*)/);
+  if (numberPrefixMatch) {
+    reason = numberPrefixMatch[1];
+  }
+  
+  // Convert to lowercase for matching
+  const reasonLower = reason.toLowerCase();
+  
+  // Check if we have an exact match in fixed rules
+  if (rules.fixed[reasonLower]) {
+    return rules.fixed[reasonLower].value;
+  }
+  
+  // Check if we have an exact match in not_fixed rules
+  if (rules.not_fixed[reasonLower]) {
+    const rule = rules.not_fixed[reasonLower];
+    const expenses = application.expenses || 0;
     const value = expenses * rule.percentage / 100;
     return Math.min(value, rule.max_value);
-  } else {
-    return 0;
   }
+  
+  // Try partial matching for fixed rules
+  const fixedKeys = Object.keys(rules.fixed);
+  for (const key of fixedKeys) {
+    if (reasonLower.includes(key)) {
+      return rules.fixed[key].value;
+    }
+  }
+  
+  // Try partial matching for not_fixed rules
+  const notFixedKeys = Object.keys(rules.not_fixed);
+  for (const key of notFixedKeys) {
+    if (reasonLower.includes(key)) {
+      const rule = rules.not_fixed[key];
+      const expenses = application.expenses || 0;
+      const value = expenses * rule.percentage / 100;
+      return Math.min(value, rule.max_value);
+    }
+  }
+  
+  return 0;
 };
 
 // Process all financial aid applications and calculate payments
