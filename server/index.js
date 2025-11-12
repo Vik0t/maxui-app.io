@@ -23,90 +23,45 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Initialize database tables
 const initDatabase = async () => {
   try {
-    // Log database configuration for debugging
-    console.log('Attempting to connect to database with config:', {
-      user: process.env.DB_USER || 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      database: process.env.DB_NAME || 'max_app',
-      port: process.env.DB_PORT || 5432,
+    // Log Supabase configuration for debugging
+    console.log('Attempting to connect to Supabase with config:', {
+      supabaseUrl: process.env.SUPABASE_URL,
+      hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
     });
     
-    // Test database connection
-    await db.query('SELECT NOW()');
+    // Test database connection by querying a simple select
+    const testResult = await db.query('SELECT NOW()');
     console.log('Database connected successfully');
     
-    // Create applications table
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS applications (
-        id SERIAL PRIMARY KEY,
-        type VARCHAR(50) NOT NULL,
-        name VARCHAR(255) NOT NULL,
-        faculty VARCHAR(255),
-        course_with_group VARCHAR(100),
-        contact_phone VARCHAR(50),
-        pass_serial VARCHAR(50),
-        pass_place TEXT,
-        registration TEXT,
-        reason TEXT,
-        documents TEXT,
-        date DATE,
-        expenses DECIMAL(10, 2),
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        status VARCHAR(50) DEFAULT 'pending'
-      )
-    `);
+    // For Supabase, we'll skip automatic table creation and instead
+    // provide instructions for manual table creation
+    console.log('For Supabase deployments, please ensure tables are created manually using the SQL commands in server/migrations/init.sql');
     
-    // Create deans table
-    await db.query(`
-      CREATE TABLE IF NOT EXISTS deans (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(100) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL
-      )
-    `);
-    
-    // Insert default dean user if not exists
+    // Try to insert default dean user if not exists
     try {
-      await db.query(
-        'INSERT INTO deans (username, password) VALUES ($1, $2) ON CONFLICT (username) DO NOTHING',
-        ['dean', '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa']
-      );
-    } catch (insertError) {
-      // If ON CONFLICT is not supported, try the old way
+      // First check if the user exists
       const deanResult = await db.query('SELECT * FROM deans WHERE username = $1', ['dean']);
       if (deanResult.rows.length === 0) {
         await db.query(
           'INSERT INTO deans (username, password) VALUES ($1, $2)',
           ['dean', '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa']
         );
+        console.log('Default dean user created');
+      } else {
+        console.log('Default dean user already exists');
       }
+    } catch (insertError) {
+      console.log('Note: Could not automatically create default dean user. Please ensure it exists in the database.');
+      console.log('You can manually insert it using: INSERT INTO deans (username, password) VALUES (\'dean\', \'$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa\');');
     }
     
-    console.log('Database initialized successfully');
+    console.log('Database initialization completed');
   } catch (error) {
     console.error('Error initializing database:', error);
-    // Handle different types of database errors
-    if (error.code === 'ECONNREFUSED') {
-      console.error('Database connection error. Please make sure PostgreSQL is installed and running.');
-    } else if (error.code === 'ENOTFOUND') {
-      console.error('Database host not found. Please check your database configuration.');
-    } else if (error.code === 'ECONNRESET') {
-      console.error('Database connection was reset. Please try again.');
-    } else if (error.code === 'ETIMEDOUT') {
-      console.error('Database connection timed out. Please try again.');
-    } else if (error.code === '28P01') {
-      console.error('Invalid database password. Please check your database configuration.');
-    } else if (error.code === '3D000') {
-      console.error('Database does not exist. Please check your database configuration.');
-    } else if (error.code === '28000') {
-      console.error('Invalid database user. Please check your database configuration.');
-    } else if (error.code === '42501') {
-      console.error('Insufficient privileges to create tables. This is common with Supabase free tier.');
-      console.error('Please manually run the SQL commands from server/migrations/init.sql in your Supabase SQL editor.');
-    } else {
-      console.error('Unknown database error. Please check your database configuration.');
-    }
-    console.error('Follow the setup instructions in README.md to configure the database.');
+    console.error('For Supabase deployments, please ensure:');
+    console.error('1. Environment variables SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set');
+    console.error('2. Tables are created manually using the SQL commands in server/migrations/init.sql');
+    console.error('3. The default dean user exists in the database');
   }
 };
 

@@ -85,12 +85,15 @@ This guide will help you deploy your MAX App server to Vercel with PostgreSQL da
      ```
      JWT_SECRET=your-secure-jwt-secret
      PORT=3000
-     DB_USER=postgres
-     DB_HOST=your-supabase-host.supabase.co
-     DB_NAME=postgres
-     DB_PASSWORD=your-database-password
-     DB_PORT=5432
+     SUPABASE_URL=your-supabase-project-url
+     SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
      ```
+   
+   To get your Supabase credentials:
+   - Go to your Supabase project dashboard
+   - Navigate to Settings → API
+   - Copy the Project URL (SUPABASE_URL)
+   - Copy the service_role key (SUPABASE_SERVICE_ROLE_KEY)
 
 6. Click "Deploy"
 
@@ -161,6 +164,12 @@ If environment variables are not being read:
 
 1. Make sure they are set in Vercel project settings
 2. Redeploy your application after setting environment variables
+
+For Supabase deployments, ensure you're using:
+- SUPABASE_URL (not DB_HOST, DB_USER, etc.)
+- SUPABASE_SERVICE_ROLE_KEY (not DB_PASSWORD)
+
+The older DB_* environment variables are for direct PostgreSQL connections and won't work with Supabase's connection pooling.
 
 ## Updating Your Deployment
 
