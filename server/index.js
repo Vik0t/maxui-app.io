@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const db = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,16 +20,61 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// In-memory data storage (in a real app, this would be a database)
-let applications = [];
-let deans = [
-  {
-    id: 1,
-    username: 'dean',
-    // Password is 'dean123' hashed
-    password: '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa'
+// Initialize database tables
+const initDatabase = async () => {
+  try {
+    // Test database connection
+    await db.query('SELECT NOW()');
+    console.log('Database connected successfully');
+    
+    // Create applications table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS applications (
+        id SERIAL PRIMARY KEY,
+        type VARCHAR(50) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        faculty VARCHAR(255),
+        course_with_group VARCHAR(100),
+        contact_phone VARCHAR(50),
+        pass_serial VARCHAR(50),
+        pass_place TEXT,
+        registration TEXT,
+        reason TEXT,
+        documents TEXT,
+        date DATE,
+        expenses DECIMAL(10, 2),
+        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        status VARCHAR(50) DEFAULT 'pending'
+      )
+    `);
+    
+    // Create deans table
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS deans (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(100) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL
+      )
+    `);
+    
+    // Insert default dean user if not exists
+    const deanResult = await db.query('SELECT * FROM deans WHERE username = $1', ['dean']);
+    if (deanResult.rows.length === 0) {
+      await db.query(
+        'INSERT INTO deans (username, password) VALUES ($1, $2)',
+        ['dean', '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa']
+      );
+    }
+    
+    console.log('Database initialized successfully');
+  } catch (error) {
+    console.error('Error connecting to database. Please make sure PostgreSQL is installed and running:', error.message);
+    console.error('Follow the setup instructions in README.md to configure the database.');
   }
-];
+};
+
+// Initialize database on startup
+initDatabase();
 
 // Financial aid payment rules
 const financialAidRules = {
@@ -167,11 +214,13 @@ app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     
-    // Find dean
-    const dean = deans.find(d => d.username === username);
-    if (!dean) {
+    // Find dean in database
+    const result = await db.query('SELECT * FROM deans WHERE username = $1', [username]);
+    if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+    
+    const dean = result.rows[0];
     
     // Check password
     const isValidPassword = await bcrypt.compare(password, dean.password);
@@ -191,39 +240,52 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Error during authentication:', error);
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Get all applications
-app.get('/api/applications', authenticateToken, (req, res) => {
+app.get('/api/applications', authenticateToken, async (req, res) => {
   try {
+    const result = await db.query('SELECT * FROM applications ORDER BY timestamp DESC');
     res.json({
       success: true,
-      applications
+      applications: result.rows
     });
   } catch (error) {
+    console.error('Error fetching applications:', error);
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Get applications by type
-app.get('/api/applications/type/:type', authenticateToken, (req, res) => {
+app.get('/api/applications/type/:type', authenticateToken, async (req, res) => {
   try {
     const { type } = req.params;
-    const filteredApplications = applications.filter(app => app.type === type);
+    const result = await db.query('SELECT * FROM applications WHERE type = $1 ORDER BY timestamp DESC', [type]);
     
     res.json({
       success: true,
-      applications: filteredApplications
+      applications: result.rows
     });
   } catch (error) {
+    console.error('Error fetching applications by type:', error);
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Create new application
-app.post('/api/applications', (req, res) => {
+app.post('/api/applications', async (req, res) => {
   try {
     const applicationData = req.body;
     
@@ -232,29 +294,48 @@ app.post('/api/applications', (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
     
-    // Create new application
-    const newApplication = {
-      id: Date.now(),
-      ...applicationData,
-      timestamp: new Date().toISOString(),
-      status: 'pending'
-    };
-    
-    applications.push(newApplication);
+    // Insert new application into database
+    const result = await db.query(
+      `INSERT INTO applications
+      (type, name, faculty, course_with_group, contact_phone, pass_serial, pass_place, registration, reason, documents, date, expenses, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      RETURNING *`,
+      [
+        applicationData.type,
+        applicationData.name,
+        applicationData.faculty,
+        applicationData.courseWithGroup,
+        applicationData.contactPhone,
+        applicationData.passSerial,
+        applicationData.passPlace,
+        applicationData.registration,
+        applicationData.reason,
+        applicationData.documents,
+        applicationData.date,
+        applicationData.expenses,
+        'pending'
+      ]
+    );
     
     res.status(201).json({
       success: true,
-      application: newApplication
+      application: result.rows[0]
     });
   } catch (error) {
+    console.error('Error creating application:', error);
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Calculate financial aid payments
-app.get('/api/applications/financial-aid/payments', authenticateToken, (req, res) => {
+app.get('/api/applications/financial-aid/payments', authenticateToken, async (req, res) => {
   try {
-    const { results, total } = processApplications(applications, financialAidRules);
+    // Fetch all applications from database
+    const result = await db.query('SELECT * FROM applications');
+    const { results, total } = processApplications(result.rows, financialAidRules);
     
     res.json({
       success: true,
@@ -262,45 +343,80 @@ app.get('/api/applications/financial-aid/payments', authenticateToken, (req, res
       total: total
     });
   } catch (error) {
+    console.error('Error calculating payments:', error);
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Update application status
-app.put('/api/applications/:id/status', authenticateToken, (req, res) => {
+app.put('/api/applications/:id/status', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
     
-    // Find application
-    const applicationIndex = applications.findIndex(app => app.id === parseInt(id));
-    if (applicationIndex === -1) {
+    // Update status in database
+    const result = await db.query(
+      'UPDATE applications SET status = $1 WHERE id = $2 RETURNING *',
+      [status, id]
+    );
+    
+    if (result.rows.length === 0) {
       return res.status(404).json({ error: 'Application not found' });
     }
     
-    // Update status
-    applications[applicationIndex].status = status;
-    
     res.json({
       success: true,
-      application: applications[applicationIndex]
+      application: result.rows[0]
     });
   } catch (error) {
+    console.error('Error updating application status:', error);
+    if (error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Get applications statistics
-app.get('/api/applications/stats', authenticateToken, (req, res) => {
+app.get('/api/applications/stats', authenticateToken, async (req, res) => {
   try {
-    const total = applications.length;
-    const pending = applications.filter(app => app.status === 'pending').length;
-    const approved = applications.filter(app => app.status === 'approved').length;
-    const rejected = applications.filter(app => app.status === 'rejected').length;
+    // Get total count
+    const totalResult = await db.query('SELECT COUNT(*) as count FROM applications');
+    const total = parseInt(totalResult.rows[0].count);
+    
+    // Get count by status
+    const statusResult = await db.query(`
+      SELECT status, COUNT(*) as count
+      FROM applications
+      GROUP BY status
+    `);
+    
+    let pending = 0, approved = 0, rejected = 0;
+    statusResult.rows.forEach(row => {
+      switch (row.status) {
+        case 'pending': pending = parseInt(row.count); break;
+        case 'approved': approved = parseInt(row.count); break;
+        case 'rejected': rejected = parseInt(row.count); break;
+      }
+    });
     
     // Count by type
-    const financialAidCount = applications.filter(app => app.type === 'financial_aid').length;
-    const certificateCount = applications.filter(app => app.type === 'certificate').length;
+    const typeResult = await db.query(`
+      SELECT type, COUNT(*) as count
+      FROM applications
+      GROUP BY type
+    `);
+    
+    let financialAidCount = 0, certificateCount = 0;
+    typeResult.rows.forEach(row => {
+      switch (row.type) {
+        case 'financial_aid': financialAidCount = parseInt(row.count); break;
+        case 'certificate': certificateCount = parseInt(row.count); break;
+      }
+    });
     
     // For student count, we'll use a simple approach
     // In a real app, this would come from a separate students database
@@ -319,6 +435,7 @@ app.get('/api/applications/stats', authenticateToken, (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Error fetching application stats:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
