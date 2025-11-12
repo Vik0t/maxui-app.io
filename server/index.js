@@ -1,10 +1,8 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -20,6 +18,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+<<<<<<< HEAD
 // Initialize database tables
 const initDatabase = async () => {
   try {
@@ -62,11 +61,18 @@ const initDatabase = async () => {
     console.error('1. Environment variables SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set');
     console.error('2. Tables are created manually using the SQL commands in server/migrations/init.sql');
     console.error('3. The default dean user exists in the database');
+=======
+// In-memory data storage (in a real app, this would be a database)
+let applications = [];
+let deans = [
+  {
+    id: 1,
+    username: 'dean',
+    // Password is 'dean123' hashed
+    password: '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa'
+>>>>>>> parent of a95de35 (db added)
   }
-};
-
-// Initialize database on startup
-initDatabase();
+];
 
 // Financial aid payment rules
 const financialAidRules = {
@@ -208,6 +214,7 @@ app.post('/api/auth/login', async (req, res) => {
     
     const { username, password } = req.body;
     
+<<<<<<< HEAD
     // Log database configuration for debugging
     console.log('Database config during auth:', {
       user: process.env.DB_USER || 'postgres',
@@ -219,10 +226,13 @@ app.post('/api/auth/login', async (req, res) => {
     // Find dean in database
     const result = await db.query('SELECT * FROM deans WHERE username = $1', [username]);
     if (result.rows.length === 0) {
+=======
+    // Find dean
+    const dean = deans.find(d => d.username === username);
+    if (!dean) {
+>>>>>>> parent of a95de35 (db added)
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    
-    const dean = result.rows[0];
     
     // Check password
     const isValidPassword = await bcrypt.compare(password, dean.password);
@@ -242,6 +252,7 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
+<<<<<<< HEAD
     console.error('Error during authentication:', error);
     // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
@@ -260,18 +271,21 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
     res.status(500).json({ error: 'Server error: ' + error.message });
+=======
+    res.status(500).json({ error: 'Server error' });
+>>>>>>> parent of a95de35 (db added)
   }
 });
 
 // Get all applications
-app.get('/api/applications', authenticateToken, async (req, res) => {
+app.get('/api/applications', authenticateToken, (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM applications ORDER BY timestamp DESC');
     res.json({
       success: true,
-      applications: result.rows
+      applications
     });
   } catch (error) {
+<<<<<<< HEAD
     console.error('Error fetching applications:', error);
     // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
@@ -290,20 +304,24 @@ app.get('/api/applications', authenticateToken, async (req, res) => {
       return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
     res.status(500).json({ error: 'Server error: ' + error.message });
+=======
+    res.status(500).json({ error: 'Server error' });
+>>>>>>> parent of a95de35 (db added)
   }
 });
 
 // Get applications by type
-app.get('/api/applications/type/:type', authenticateToken, async (req, res) => {
+app.get('/api/applications/type/:type', authenticateToken, (req, res) => {
   try {
     const { type } = req.params;
-    const result = await db.query('SELECT * FROM applications WHERE type = $1 ORDER BY timestamp DESC', [type]);
+    const filteredApplications = applications.filter(app => app.type === type);
     
     res.json({
       success: true,
-      applications: result.rows
+      applications: filteredApplications
     });
   } catch (error) {
+<<<<<<< HEAD
     console.error('Error fetching applications by type:', error);
     // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
@@ -322,11 +340,14 @@ app.get('/api/applications/type/:type', authenticateToken, async (req, res) => {
       return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
     res.status(500).json({ error: 'Server error: ' + error.message });
+=======
+    res.status(500).json({ error: 'Server error' });
+>>>>>>> parent of a95de35 (db added)
   }
 });
 
 // Create new application
-app.post('/api/applications', async (req, res) => {
+app.post('/api/applications', (req, res) => {
   try {
     const applicationData = req.body;
     
@@ -335,34 +356,22 @@ app.post('/api/applications', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
     
-    // Insert new application into database
-    const result = await db.query(
-      `INSERT INTO applications
-      (type, name, faculty, course_with_group, contact_phone, pass_serial, pass_place, registration, reason, documents, date, expenses, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-      RETURNING *`,
-      [
-        applicationData.type,
-        applicationData.name,
-        applicationData.faculty,
-        applicationData.courseWithGroup,
-        applicationData.contactPhone,
-        applicationData.passSerial,
-        applicationData.passPlace,
-        applicationData.registration,
-        applicationData.reason,
-        applicationData.documents,
-        applicationData.date,
-        applicationData.expenses,
-        'pending'
-      ]
-    );
+    // Create new application
+    const newApplication = {
+      id: Date.now(),
+      ...applicationData,
+      timestamp: new Date().toISOString(),
+      status: 'pending'
+    };
+    
+    applications.push(newApplication);
     
     res.status(201).json({
       success: true,
-      application: result.rows[0]
+      application: newApplication
     });
   } catch (error) {
+<<<<<<< HEAD
     console.error('Error creating application:', error);
     // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
@@ -381,15 +390,16 @@ app.post('/api/applications', async (req, res) => {
       return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
     res.status(500).json({ error: 'Server error: ' + error.message });
+=======
+    res.status(500).json({ error: 'Server error' });
+>>>>>>> parent of a95de35 (db added)
   }
 });
 
 // Calculate financial aid payments
-app.get('/api/applications/financial-aid/payments', authenticateToken, async (req, res) => {
+app.get('/api/applications/financial-aid/payments', authenticateToken, (req, res) => {
   try {
-    // Fetch all applications from database
-    const result = await db.query('SELECT * FROM applications');
-    const { results, total } = processApplications(result.rows, financialAidRules);
+    const { results, total } = processApplications(applications, financialAidRules);
     
     res.json({
       success: true,
@@ -397,6 +407,7 @@ app.get('/api/applications/financial-aid/payments', authenticateToken, async (re
       total: total
     });
   } catch (error) {
+<<<<<<< HEAD
     console.error('Error calculating payments:', error);
     // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
@@ -415,30 +426,33 @@ app.get('/api/applications/financial-aid/payments', authenticateToken, async (re
       return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
     res.status(500).json({ error: 'Server error: ' + error.message });
+=======
+    res.status(500).json({ error: 'Server error' });
+>>>>>>> parent of a95de35 (db added)
   }
 });
 
 // Update application status
-app.put('/api/applications/:id/status', authenticateToken, async (req, res) => {
+app.put('/api/applications/:id/status', authenticateToken, (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
     
-    // Update status in database
-    const result = await db.query(
-      'UPDATE applications SET status = $1 WHERE id = $2 RETURNING *',
-      [status, id]
-    );
-    
-    if (result.rows.length === 0) {
+    // Find application
+    const applicationIndex = applications.findIndex(app => app.id === parseInt(id));
+    if (applicationIndex === -1) {
       return res.status(404).json({ error: 'Application not found' });
     }
     
+    // Update status
+    applications[applicationIndex].status = status;
+    
     res.json({
       success: true,
-      application: result.rows[0]
+      application: applications[applicationIndex]
     });
   } catch (error) {
+<<<<<<< HEAD
     console.error('Error updating application status:', error);
     // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
@@ -457,46 +471,23 @@ app.put('/api/applications/:id/status', authenticateToken, async (req, res) => {
       return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
     res.status(500).json({ error: 'Server error: ' + error.message });
+=======
+    res.status(500).json({ error: 'Server error' });
+>>>>>>> parent of a95de35 (db added)
   }
 });
 
 // Get applications statistics
-app.get('/api/applications/stats', authenticateToken, async (req, res) => {
+app.get('/api/applications/stats', authenticateToken, (req, res) => {
   try {
-    // Get total count
-    const totalResult = await db.query('SELECT COUNT(*) as count FROM applications');
-    const total = parseInt(totalResult.rows[0].count);
-    
-    // Get count by status
-    const statusResult = await db.query(`
-      SELECT status, COUNT(*) as count
-      FROM applications
-      GROUP BY status
-    `);
-    
-    let pending = 0, approved = 0, rejected = 0;
-    statusResult.rows.forEach(row => {
-      switch (row.status) {
-        case 'pending': pending = parseInt(row.count); break;
-        case 'approved': approved = parseInt(row.count); break;
-        case 'rejected': rejected = parseInt(row.count); break;
-      }
-    });
+    const total = applications.length;
+    const pending = applications.filter(app => app.status === 'pending').length;
+    const approved = applications.filter(app => app.status === 'approved').length;
+    const rejected = applications.filter(app => app.status === 'rejected').length;
     
     // Count by type
-    const typeResult = await db.query(`
-      SELECT type, COUNT(*) as count
-      FROM applications
-      GROUP BY type
-    `);
-    
-    let financialAidCount = 0, certificateCount = 0;
-    typeResult.rows.forEach(row => {
-      switch (row.type) {
-        case 'financial_aid': financialAidCount = parseInt(row.count); break;
-        case 'certificate': certificateCount = parseInt(row.count); break;
-      }
-    });
+    const financialAidCount = applications.filter(app => app.type === 'financial_aid').length;
+    const certificateCount = applications.filter(app => app.type === 'certificate').length;
     
     // For student count, we'll use a simple approach
     // In a real app, this would come from a separate students database
@@ -515,6 +506,7 @@ app.get('/api/applications/stats', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
+<<<<<<< HEAD
     console.error('Error fetching application stats:', error);
     // Handle different types of database errors
     if (error.code === 'ECONNREFUSED') {
@@ -533,6 +525,9 @@ app.get('/api/applications/stats', authenticateToken, async (req, res) => {
       return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
     }
     res.status(500).json({ error: 'Server error: ' + error.message });
+=======
+    res.status(500).json({ error: 'Server error' });
+>>>>>>> parent of a95de35 (db added)
   }
 });
 
