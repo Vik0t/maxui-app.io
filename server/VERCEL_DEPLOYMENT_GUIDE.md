@@ -132,6 +132,17 @@ If you encounter database connection issues:
 2. Ensure your database password is correct
 3. Verify that your Supabase project is not paused
 
+### Database Initialization Issues
+
+If you encounter database initialization errors (common with Supabase free tier):
+
+1. The application tries to automatically create tables on first run
+2. Supabase free tier may have restrictions that prevent automatic table creation
+3. If you see errors like "insufficient privileges", you need to manually create the tables:
+   a. Go to your Supabase project dashboard
+   b. Navigate to SQL Editor
+   c. Copy and run the SQL commands from `server/migrations/init.sql`
+
 ### CORS Issues
 
 If you encounter CORS issues:

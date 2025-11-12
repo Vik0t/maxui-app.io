@@ -59,6 +59,14 @@ A student service application built with React, Vite, and MAXUI for managing fin
 
 The application can be deployed to Vercel with a managed PostgreSQL database. Follow the detailed guide in [VERCEL_DEPLOYMENT_GUIDE.md](server/VERCEL_DEPLOYMENT_GUIDE.md).
 
+#### Important Notes for Vercel Deployment
+
+1. **Database Initialization**: When deploying to Vercel with Supabase, the automatic database table creation might fail due to permission restrictions. If you encounter database initialization errors, you'll need to manually create the tables using the SQL commands in [server/migrations/init.sql](server/migrations/init.sql).
+
+2. **Environment Variables**: Make sure to configure all environment variables in the Vercel project settings, including database connection details and JWT secret.
+
+3. **CORS Configuration**: The application is configured to allow CORS requests from specific origins. If you deploy to a different domain, you may need to update the CORS configuration in [server/index.js](server/index.js).
+
 ### Environment Variables
 
 For local development, create a `.env` file in the server directory:

@@ -58,17 +58,46 @@ const initDatabase = async () => {
     `);
     
     // Insert default dean user if not exists
-    const deanResult = await db.query('SELECT * FROM deans WHERE username = $1', ['dean']);
-    if (deanResult.rows.length === 0) {
+    try {
       await db.query(
-        'INSERT INTO deans (username, password) VALUES ($1, $2)',
+        'INSERT INTO deans (username, password) VALUES ($1, $2) ON CONFLICT (username) DO NOTHING',
         ['dean', '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa']
       );
+    } catch (insertError) {
+      // If ON CONFLICT is not supported, try the old way
+      const deanResult = await db.query('SELECT * FROM deans WHERE username = $1', ['dean']);
+      if (deanResult.rows.length === 0) {
+        await db.query(
+          'INSERT INTO deans (username, password) VALUES ($1, $2)',
+          ['dean', '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa']
+        );
+      }
     }
     
     console.log('Database initialized successfully');
   } catch (error) {
-    console.error('Error connecting to database. Please make sure PostgreSQL is installed and running:', error.message);
+    console.error('Error initializing database:', error);
+    // Handle different types of database errors
+    if (error.code === 'ECONNREFUSED') {
+      console.error('Database connection error. Please make sure PostgreSQL is installed and running.');
+    } else if (error.code === 'ENOTFOUND') {
+      console.error('Database host not found. Please check your database configuration.');
+    } else if (error.code === 'ECONNRESET') {
+      console.error('Database connection was reset. Please try again.');
+    } else if (error.code === 'ETIMEDOUT') {
+      console.error('Database connection timed out. Please try again.');
+    } else if (error.code === '28P01') {
+      console.error('Invalid database password. Please check your database configuration.');
+    } else if (error.code === '3D000') {
+      console.error('Database does not exist. Please check your database configuration.');
+    } else if (error.code === '28000') {
+      console.error('Invalid database user. Please check your database configuration.');
+    } else if (error.code === '42501') {
+      console.error('Insufficient privileges to create tables. This is common with Supabase free tier.');
+      console.error('Please manually run the SQL commands from server/migrations/init.sql in your Supabase SQL editor.');
+    } else {
+      console.error('Unknown database error. Please check your database configuration.');
+    }
     console.error('Follow the setup instructions in README.md to configure the database.');
   }
 };
