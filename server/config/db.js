@@ -10,6 +10,14 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
 });
 
+// Log database configuration (without password) for debugging
+console.log('Database configuration:', {
+  user: process.env.DB_USER || 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'max_app',
+  port: process.env.DB_PORT || 5432,
+});
+
 // Test the database connection
 pool.query('SELECT NOW()', (err, res) => {
   if (err) {

@@ -23,6 +23,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Initialize database tables
 const initDatabase = async () => {
   try {
+    // Log database configuration for debugging
+    console.log('Attempting to connect to database with config:', {
+      user: process.env.DB_USER || 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      database: process.env.DB_NAME || 'max_app',
+      port: process.env.DB_PORT || 5432,
+    });
+    
     // Test database connection
     await db.query('SELECT NOW()');
     console.log('Database connected successfully');
@@ -241,7 +249,17 @@ const authenticateToken = (req, res, next) => {
 // Dean authentication
 app.post('/api/auth/login', async (req, res) => {
   try {
+    console.log('Authentication request received:', req.body);
+    
     const { username, password } = req.body;
+    
+    // Log database configuration for debugging
+    console.log('Database config during auth:', {
+      user: process.env.DB_USER || 'postgres',
+      host: process.env.DB_HOST || 'localhost',
+      database: process.env.DB_NAME || 'max_app',
+      port: process.env.DB_PORT || 5432,
+    });
     
     // Find dean in database
     const result = await db.query('SELECT * FROM deans WHERE username = $1', [username]);
