@@ -3,6 +3,14 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const {
+  getApplications,
+  getApplicationsByType,
+  createApplication,
+  updateApplicationStatus,
+  getDeanByUsername,
+  getApplicationsStats
+} = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,17 +25,6 @@ app.use(cors({
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// In-memory data storage (in a real app, this would be a database)
-let applications = [];
-let deans = [
-  {
-    id: 1,
-    username: 'dean',
-    // Password is 'dean123' hashed
-    password: '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa'
-  }
-];
 
 // Financial aid payment rules
 const financialAidRules = {
@@ -167,8 +164,8 @@ app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     
-    // Find dean
-    const dean = deans.find(d => d.username === username);
+    // Find dean in database
+    const dean = await getDeanByUsername(username);
     if (!dean) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -180,7 +177,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
     
     // Generate token
-    const token = generateToken(dean);
+    const token = generateToken({ id: dean.id, username: dean.username });
     
     res.json({
       success: true,
@@ -196,8 +193,9 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Get all applications
-app.get('/api/applications', authenticateToken, (req, res) => {
+app.get('/api/applications', authenticateToken, async (req, res) => {
   try {
+    const applications = await getApplications();
     res.json({
       success: true,
       applications
@@ -208,14 +206,14 @@ app.get('/api/applications', authenticateToken, (req, res) => {
 });
 
 // Get applications by type
-app.get('/api/applications/type/:type', authenticateToken, (req, res) => {
+app.get('/api/applications/type/:type', authenticateToken, async (req, res) => {
   try {
     const { type } = req.params;
-    const filteredApplications = applications.filter(app => app.type === type);
+    const applications = await getApplicationsByType(type);
     
     res.json({
       success: true,
-      applications: filteredApplications
+      applications
     });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
@@ -223,7 +221,7 @@ app.get('/api/applications/type/:type', authenticateToken, (req, res) => {
 });
 
 // Create new application
-app.post('/api/applications', (req, res) => {
+app.post('/api/applications', async (req, res) => {
   try {
     const applicationData = req.body;
     
@@ -232,15 +230,15 @@ app.post('/api/applications', (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
     
-    // Create new application
-    const newApplication = {
-      id: Date.now(),
+    // Add timestamp and status if not provided
+    const applicationToSave = {
       ...applicationData,
-      timestamp: new Date().toISOString(),
-      status: 'pending'
+      timestamp: applicationData.timestamp || new Date().toISOString(),
+      status: applicationData.status || 'pending'
     };
     
-    applications.push(newApplication);
+    // Create new application in database
+    const newApplication = await createApplication(applicationToSave);
     
     res.status(201).json({
       success: true,
@@ -252,9 +250,10 @@ app.post('/api/applications', (req, res) => {
 });
 
 // Calculate financial aid payments
-app.get('/api/applications/financial-aid/payments', authenticateToken, (req, res) => {
+app.get('/api/applications/financial-aid/payments', authenticateToken, async (req, res) => {
   try {
-    const { results, total } = processApplications(applications, financialAidRules);
+    const allApplications = await getApplications();
+    const { results, total } = processApplications(allApplications, financialAidRules);
     
     res.json({
       success: true,
@@ -267,54 +266,39 @@ app.get('/api/applications/financial-aid/payments', authenticateToken, (req, res
 });
 
 // Update application status
-app.put('/api/applications/:id/status', authenticateToken, (req, res) => {
+app.put('/api/applications/:id/status', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
     
-    // Find application
-    const applicationIndex = applications.findIndex(app => app.id === parseInt(id));
-    if (applicationIndex === -1) {
-      return res.status(404).json({ error: 'Application not found' });
-    }
-    
-    // Update status
-    applications[applicationIndex].status = status;
+    // Update status in database
+    const updatedApplication = await updateApplicationStatus(id, status);
     
     res.json({
       success: true,
-      application: applications[applicationIndex]
+      application: updatedApplication
     });
   } catch (error) {
+    if (error.message === 'Application not found') {
+      return res.status(404).json({ error: 'Application not found' });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Get applications statistics
-app.get('/api/applications/stats', authenticateToken, (req, res) => {
+app.get('/api/applications/stats', authenticateToken, async (req, res) => {
   try {
-    const total = applications.length;
-    const pending = applications.filter(app => app.status === 'pending').length;
-    const approved = applications.filter(app => app.status === 'approved').length;
-    const rejected = applications.filter(app => app.status === 'rejected').length;
-    
-    // Count by type
-    const financialAidCount = applications.filter(app => app.type === 'financial_aid').length;
-    const certificateCount = applications.filter(app => app.type === 'certificate').length;
+    const stats = await getApplicationsStats();
     
     // For student count, we'll use a simple approach
     // In a real app, this would come from a separate students database
-    const studentCount = Math.max(1000, total * 5); // Estimate at least 1000 students
+    const studentCount = Math.max(1000, stats.total * 5); // Estimate at least 1000 students
     
     res.json({
       success: true,
       stats: {
-        total,
-        pending,
-        approved,
-        rejected,
-        financialAid: financialAidCount,
-        certificates: certificateCount,
+        ...stats,
         studentCount
       }
     });
