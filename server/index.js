@@ -18,50 +18,6 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-<<<<<<< HEAD
-// Initialize database tables
-const initDatabase = async () => {
-  try {
-    // Log Supabase configuration for debugging
-    console.log('Attempting to connect to Supabase with config:', {
-      supabaseUrl: process.env.SUPABASE_URL,
-      hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-    });
-    
-    // Test database connection by querying a simple select
-    const testResult = await db.query('SELECT NOW()');
-    console.log('Database connected successfully');
-    
-    // For Supabase, we'll skip automatic table creation and instead
-    // provide instructions for manual table creation
-    console.log('For Supabase deployments, please ensure tables are created manually using the SQL commands in server/migrations/init.sql');
-    
-    // Try to insert default dean user if not exists
-    try {
-      // First check if the user exists
-      const deanResult = await db.query('SELECT * FROM deans WHERE username = $1', ['dean']);
-      if (deanResult.rows.length === 0) {
-        await db.query(
-          'INSERT INTO deans (username, password) VALUES ($1, $2)',
-          ['dean', '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa']
-        );
-        console.log('Default dean user created');
-      } else {
-        console.log('Default dean user already exists');
-      }
-    } catch (insertError) {
-      console.log('Note: Could not automatically create default dean user. Please ensure it exists in the database.');
-      console.log('You can manually insert it using: INSERT INTO deans (username, password) VALUES (\'dean\', \'$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa\');');
-    }
-    
-    console.log('Database initialization completed');
-  } catch (error) {
-    console.error('Error initializing database:', error);
-    console.error('For Supabase deployments, please ensure:');
-    console.error('1. Environment variables SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set');
-    console.error('2. Tables are created manually using the SQL commands in server/migrations/init.sql');
-    console.error('3. The default dean user exists in the database');
-=======
 // In-memory data storage (in a real app, this would be a database)
 let applications = [];
 let deans = [
@@ -70,7 +26,6 @@ let deans = [
     username: 'dean',
     // Password is 'dean123' hashed
     password: '$2a$10$BeYXFumV478oSnEKVRqRFOAoF6p0Yq/mW87ofMZnKvW5fAXY8irpa'
->>>>>>> parent of a95de35 (db added)
   }
 ];
 
@@ -210,27 +165,11 @@ const authenticateToken = (req, res, next) => {
 // Dean authentication
 app.post('/api/auth/login', async (req, res) => {
   try {
-    console.log('Authentication request received:', req.body);
-    
     const { username, password } = req.body;
     
-<<<<<<< HEAD
-    // Log database configuration for debugging
-    console.log('Database config during auth:', {
-      user: process.env.DB_USER || 'postgres',
-      host: process.env.DB_HOST || 'localhost',
-      database: process.env.DB_NAME || 'max_app',
-      port: process.env.DB_PORT || 5432,
-    });
-    
-    // Find dean in database
-    const result = await db.query('SELECT * FROM deans WHERE username = $1', [username]);
-    if (result.rows.length === 0) {
-=======
     // Find dean
     const dean = deans.find(d => d.username === username);
     if (!dean) {
->>>>>>> parent of a95de35 (db added)
       return res.status(401).json({ error: 'Invalid credentials' });
     }
     
@@ -252,28 +191,7 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
-<<<<<<< HEAD
-    console.error('Error during authentication:', error);
-    // Handle different types of database errors
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
-    } else if (error.code === 'ENOTFOUND') {
-      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
-    } else if (error.code === 'ECONNRESET') {
-      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
-    } else if (error.code === 'ETIMEDOUT') {
-      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
-    } else if (error.code === '28P01') {
-      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
-    } else if (error.code === '3D000') {
-      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
-    } else if (error.code === '28000') {
-      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
-    }
-    res.status(500).json({ error: 'Server error: ' + error.message });
-=======
     res.status(500).json({ error: 'Server error' });
->>>>>>> parent of a95de35 (db added)
   }
 });
 
@@ -285,28 +203,7 @@ app.get('/api/applications', authenticateToken, (req, res) => {
       applications
     });
   } catch (error) {
-<<<<<<< HEAD
-    console.error('Error fetching applications:', error);
-    // Handle different types of database errors
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
-    } else if (error.code === 'ENOTFOUND') {
-      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
-    } else if (error.code === 'ECONNRESET') {
-      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
-    } else if (error.code === 'ETIMEDOUT') {
-      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
-    } else if (error.code === '28P01') {
-      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
-    } else if (error.code === '3D000') {
-      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
-    } else if (error.code === '28000') {
-      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
-    }
-    res.status(500).json({ error: 'Server error: ' + error.message });
-=======
     res.status(500).json({ error: 'Server error' });
->>>>>>> parent of a95de35 (db added)
   }
 });
 
@@ -321,28 +218,7 @@ app.get('/api/applications/type/:type', authenticateToken, (req, res) => {
       applications: filteredApplications
     });
   } catch (error) {
-<<<<<<< HEAD
-    console.error('Error fetching applications by type:', error);
-    // Handle different types of database errors
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
-    } else if (error.code === 'ENOTFOUND') {
-      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
-    } else if (error.code === 'ECONNRESET') {
-      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
-    } else if (error.code === 'ETIMEDOUT') {
-      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
-    } else if (error.code === '28P01') {
-      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
-    } else if (error.code === '3D000') {
-      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
-    } else if (error.code === '28000') {
-      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
-    }
-    res.status(500).json({ error: 'Server error: ' + error.message });
-=======
     res.status(500).json({ error: 'Server error' });
->>>>>>> parent of a95de35 (db added)
   }
 });
 
@@ -371,28 +247,7 @@ app.post('/api/applications', (req, res) => {
       application: newApplication
     });
   } catch (error) {
-<<<<<<< HEAD
-    console.error('Error creating application:', error);
-    // Handle different types of database errors
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
-    } else if (error.code === 'ENOTFOUND') {
-      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
-    } else if (error.code === 'ECONNRESET') {
-      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
-    } else if (error.code === 'ETIMEDOUT') {
-      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
-    } else if (error.code === '28P01') {
-      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
-    } else if (error.code === '3D000') {
-      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
-    } else if (error.code === '28000') {
-      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
-    }
-    res.status(500).json({ error: 'Server error: ' + error.message });
-=======
     res.status(500).json({ error: 'Server error' });
->>>>>>> parent of a95de35 (db added)
   }
 });
 
@@ -407,28 +262,7 @@ app.get('/api/applications/financial-aid/payments', authenticateToken, (req, res
       total: total
     });
   } catch (error) {
-<<<<<<< HEAD
-    console.error('Error calculating payments:', error);
-    // Handle different types of database errors
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
-    } else if (error.code === 'ENOTFOUND') {
-      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
-    } else if (error.code === 'ECONNRESET') {
-      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
-    } else if (error.code === 'ETIMEDOUT') {
-      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
-    } else if (error.code === '28P01') {
-      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
-    } else if (error.code === '3D000') {
-      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
-    } else if (error.code === '28000') {
-      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
-    }
-    res.status(500).json({ error: 'Server error: ' + error.message });
-=======
     res.status(500).json({ error: 'Server error' });
->>>>>>> parent of a95de35 (db added)
   }
 });
 
@@ -452,28 +286,7 @@ app.put('/api/applications/:id/status', authenticateToken, (req, res) => {
       application: applications[applicationIndex]
     });
   } catch (error) {
-<<<<<<< HEAD
-    console.error('Error updating application status:', error);
-    // Handle different types of database errors
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
-    } else if (error.code === 'ENOTFOUND') {
-      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
-    } else if (error.code === 'ECONNRESET') {
-      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
-    } else if (error.code === 'ETIMEDOUT') {
-      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
-    } else if (error.code === '28P01') {
-      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
-    } else if (error.code === '3D000') {
-      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
-    } else if (error.code === '28000') {
-      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
-    }
-    res.status(500).json({ error: 'Server error: ' + error.message });
-=======
     res.status(500).json({ error: 'Server error' });
->>>>>>> parent of a95de35 (db added)
   }
 });
 
@@ -506,28 +319,7 @@ app.get('/api/applications/stats', authenticateToken, (req, res) => {
       }
     });
   } catch (error) {
-<<<<<<< HEAD
-    console.error('Error fetching application stats:', error);
-    // Handle different types of database errors
-    if (error.code === 'ECONNREFUSED') {
-      return res.status(500).json({ error: 'Database connection error. Please make sure PostgreSQL is installed and running.' });
-    } else if (error.code === 'ENOTFOUND') {
-      return res.status(500).json({ error: 'Database host not found. Please check your database configuration.' });
-    } else if (error.code === 'ECONNRESET') {
-      return res.status(500).json({ error: 'Database connection was reset. Please try again.' });
-    } else if (error.code === 'ETIMEDOUT') {
-      return res.status(500).json({ error: 'Database connection timed out. Please try again.' });
-    } else if (error.code === '28P01') {
-      return res.status(500).json({ error: 'Invalid database password. Please check your database configuration.' });
-    } else if (error.code === '3D000') {
-      return res.status(500).json({ error: 'Database does not exist. Please check your database configuration.' });
-    } else if (error.code === '28000') {
-      return res.status(500).json({ error: 'Invalid database user. Please check your database configuration.' });
-    }
-    res.status(500).json({ error: 'Server error: ' + error.message });
-=======
     res.status(500).json({ error: 'Server error' });
->>>>>>> parent of a95de35 (db added)
   }
 });
 

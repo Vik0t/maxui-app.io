@@ -22,7 +22,6 @@ const DeanBoard = () => {
     });
 
     useEffect(() => {
-        // Fetch statistics and payments when component mounts
         loadStats();
         loadPayments();
     }, []);
@@ -48,9 +47,7 @@ const DeanBoard = () => {
     };
 
     const handleLogout = () => {
-        // Clear the authentication token
         clearAuthToken();
-        // Navigate to login page
         navigate('/');
     };
 
@@ -59,8 +56,8 @@ const DeanBoard = () => {
             <MaxUI>
                 <Panel centeredX centeredY style={{ height: '100vh' }}>
                     <Container fullWidth={true}>
-                        <Flex direction="column" gap={20}>
-                            <Flex direction="row" justify="space-between" align="center">
+                        <Flex direction="column" gap={40}>
+                            <Flex direction="row" justify="space-between" align="center" gap={70}>
                                 <Typography.Headline variant='large-strong'>
                                     Панель деканата
                                 </Typography.Headline>
@@ -79,7 +76,7 @@ const DeanBoard = () => {
                                     Заявки студентов
                                 </Typography.Headline>
                                 
-                                <Flex direction="column" gap={12}>
+                                <Flex direction="column" gap={15}>
                                     <Button
                                         appearance="themed"
                                         mode="primary"
@@ -88,11 +85,8 @@ const DeanBoard = () => {
                                         onClick={() => navigate('/dean/applications/financial_aid')}
                                     >
                                         <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium-strong">
-                                                Заявки на матпомощь
-                                            </Typography.Headline>
-                                            <Typography.Headline variant="medium-strong">
-                                                {stats.financialAid}
+                                            <Typography.Headline variant="medium-strong" className="financeInput">
+                                                Заявки на матпомощь: {stats.financialAid}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
@@ -105,11 +99,8 @@ const DeanBoard = () => {
                                         onClick={() => navigate('/dean/applications/certificate')}
                                     >
                                         <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium-strong">
-                                                Заявки на справки
-                                            </Typography.Headline>
-                                            <Typography.Headline variant="medium-strong">
-                                                {stats.certificates}
+                                            <Typography.Headline variant="medium-strong" className="financeInput">
+                                                Заявки на справки: {stats.certificates}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
@@ -129,11 +120,8 @@ const DeanBoard = () => {
                                         stretched
                                     >
                                         <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium">
-                                                Всего студентов
-                                            </Typography.Headline>
-                                            <Typography.Headline variant="medium-strong">
-                                                {stats.studentCount}
+                                            <Typography.Headline variant="medium" className="financeInput">
+                                                Всего студентов: {stats.studentCount}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
@@ -145,11 +133,8 @@ const DeanBoard = () => {
                                         stretched
                                     >
                                         <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium">
-                                                Обработано заявок
-                                            </Typography.Headline>
-                                            <Typography.Headline variant="medium-strong">
-                                                {stats.approved + stats.rejected}
+                                            <Typography.Headline variant="medium" className="financeInput">
+                                                Обработано заявок: {stats.approved + stats.rejected}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
@@ -170,11 +155,8 @@ const DeanBoard = () => {
                                         onClick={() => navigate('/dean/payments')}
                                     >
                                         <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium">
-                                                Общая сумма выплат
-                                            </Typography.Headline>
-                                            <Typography.Headline variant="medium-strong">
-                                                {payments.total} руб
+                                            <Typography.Headline variant="medium" className="financeInput">
+                                                Сумма выплат: {payments.total} руб
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
