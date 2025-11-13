@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, Input, Grid } from "@maxhub/max-ui";
-import { addApplication } from "../utils/api";
+import { addApplication, getStudentById } from "../utils/api";
 import "../App.css";
 import CustomDropdown from "./FinanceDropdown";
 
@@ -20,8 +20,36 @@ const FinanceSchema = () => {
         
         reason: '',
         documents: '',
-        date: ''
+        date: '',
+        student_id: null // Will be set from authenticated student
     });
+    
+    // Load student data on component mount
+    useEffect(() => {
+        loadStudentData();
+    }, []);
+    
+    const loadStudentData = async () => {
+        try {
+            // Get student ID from localStorage (set during login)
+            const studentId = localStorage.getItem('studentId');
+            if (studentId) {
+                const student = await getStudentById(studentId);
+                if (student) {
+                    setFormData(prev => ({
+                        ...prev,
+                        name: student.name,
+                        faculty: student.faculty,
+                        courseWithGroup: student.course_with_group,
+                        contactPhone: student.contact_phone,
+                        student_id: student.id.toString()
+                    }));
+                }
+            }
+        } catch (error) {
+            console.error('Error loading student data:', error);
+        }
+    };
 
     const nextStep = () => {
         setStep(step + 1);
@@ -45,12 +73,22 @@ const FinanceSchema = () => {
             // Save application to server
             const applicationData = {
                 type: 'financial_aid',
-                ...formData
+                name: formData.name,
+                reason: formData.reason,
+                documents: formData.documents,
+                expenses: formData.expenses,
+                passSerial: formData.passSerial,
+                passPlace: formData.passPlace,
+                registration: formData.registration,
+                additional_info: `Паспорт: ${formData.passSerial}, Выдан: ${formData.passPlace}, Регистрация: ${formData.registration}, Документы: ${formData.documents}`,
+                student_id: formData.student_id,
+                timestamp: new Date().toISOString(),
+                status: 'pending'
             };
             
             await addApplication(applicationData);
             
-            console.log('Form submitted:', formData);
+            console.log('Form submitted:', applicationData);
             alert('Заявление успешно отправлено!');
         } catch (error) {
             console.error('Error saving application:', error);
@@ -121,6 +159,7 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                     placeholder="Введите ФИО"
                     required
                     className="financeInput"
+                    readOnly
                 />
                 <Input
                     value={formData.faculty}
@@ -130,6 +169,7 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                     placeholder="Название факультета"
                     required
                     className="financeInput"
+                    readOnly
                 />
                 <Input
                     value={formData.courseWithGroup}
@@ -139,6 +179,7 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                     placeholder="Курс и номер группы через пробел"
                     required
                     className="financeInput"
+                    readOnly
                 />
                 <Input
                     value={formData.contactPhone}
@@ -148,6 +189,7 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                     placeholder="Номер контактного телефона"
                     required
                     className="financeInput"
+                    readOnly
                 />
                 <Button
                     appearance="themed"

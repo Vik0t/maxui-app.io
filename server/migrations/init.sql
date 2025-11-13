@@ -8,6 +8,21 @@ CREATE TABLE IF NOT EXISTS applications (
     reason TEXT,
     expenses REAL,
     additional_info TEXT,
+    student_id TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create students table
+CREATE TABLE IF NOT EXISTS students (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE,
+    faculty TEXT NOT NULL,
+    course_with_group TEXT NOT NULL,
+    contact_phone TEXT NOT NULL,
+    password TEXT,
+    max_id TEXT UNIQUE,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP
 );

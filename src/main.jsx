@@ -9,12 +9,16 @@ import DeanBoard from './pages/DeanBoard';
 import ApplicationsList from './pages/ApplicationsList';
 import ApplicationDetails from './pages/ApplicationDetails';
 import PaymentsList from './pages/PaymentsList';
+import StudentProfile from './pages/StudentProfile';
+import StudentLogin from './pages/StudentLogin';
 
 const Main = () => {
   return (
     <Routes>
       <Route path='/' element={<Login />} />
+      <Route path='/student/login' element={<StudentLogin />} />
       <Route path='/student' element={<StudentBoard />} />
+      <Route path='/student/profile' element={<StudentProfile />} />
       <Route path='/finance' element={<FinanceSchema />} />
       <Route path='/certificate' element={<CertificateSchema />} />
       <Route path='/dean/login' element={<DeanLogin />} />

@@ -10,7 +10,11 @@ const {
   updateApplicationStatus,
   getDeanByUsername,
   getApplicationsStats,
-  deleteApplication
+  deleteApplication,
+  createStudent,
+  getStudentById,
+  getStudentByEmail,
+  getApplicationsByStudentId
 } = require('./db');
 
 const app = express();
@@ -208,6 +212,43 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+// Student authentication
+app.post('/api/auth/student/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        // Find student in database
+        const student = await getStudentByEmail(email);
+        if (!student) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        // Check password
+        const isValidPassword = await bcrypt.compare(password, student.password);
+        if (!isValidPassword) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+        
+        // Generate token
+        const token = generateToken({ id: student.id, email: student.email });
+        
+        res.json({
+            success: true,
+            token,
+            student: {
+                id: student.id,
+                name: student.name,
+                email: student.email,
+                faculty: student.faculty,
+                courseWithGroup: student.course_with_group,
+                contactPhone: student.contact_phone
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 // Get all applications
 app.get('/api/applications', authenticateToken, async (req, res) => {
   try {
@@ -337,6 +378,67 @@ app.get('/api/applications/stats', authenticateToken, async (req, res) => {
         ...stats,
         studentCount
       }
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Create new student
+app.post('/api/students', async (req, res) => {
+  try {
+    const studentData = req.body;
+    
+    // Validate required fields
+    if (!studentData.name || !studentData.faculty || !studentData.courseWithGroup || !studentData.contactPhone) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    // Hash password if provided
+    if (studentData.password) {
+      studentData.password = await bcrypt.hash(studentData.password, 10);
+    }
+    
+    // Create new student in database
+    const newStudent = await createStudent(studentData);
+    
+    res.status(201).json({
+      success: true,
+      student: newStudent
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get student by ID
+app.get('/api/students/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const student = await getStudentById(id);
+    
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+    
+    res.json({
+      success: true,
+      student
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Get applications by student ID
+app.get('/api/students/:id/applications', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const applications = await getApplicationsByStudentId(id);
+    
+    res.json({
+      success: true,
+      applications
     });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });

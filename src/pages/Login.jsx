@@ -14,7 +14,7 @@ const Login = () => {
                     <Typography.Headline variant='large-strong'>
                         Доброго дня!
                     </Typography.Headline>
-                    <Link to="/student" style={{ textDecoration: 'none'}}>
+                    <Link to="/student/login" style={{ textDecoration: 'none'}}>
                         <Button
                             appearance="neutral"
                             mode="primary"

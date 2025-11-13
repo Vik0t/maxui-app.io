@@ -1,6 +1,6 @@
 // Utility functions for handling applications data
-// const API_BASE_URL = 'http://localhost:3001/api';
-const API_BASE_URL = 'http://46.8.69.221:3002/api';
+//const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://localhost:3002/api';
 // const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
 
 // Store JWT token
@@ -73,6 +73,30 @@ export const authenticateDean = async (username, password) => {
   }
 };
 
+// Student authentication
+export const authenticateStudent = async (email, password) => {
+    try {
+        const response = await apiRequest('/auth/student/login', {
+            method: 'POST',
+            body: JSON.stringify({ email, password })
+        });
+        
+        if (response.success) {
+            setAuthToken(response.token);
+            // Store student ID in localStorage for use in components
+            if (response.student && response.student.id) {
+                localStorage.setItem('studentId', response.student.id.toString());
+            }
+            return response;
+        }
+        
+        throw new Error(response.error || 'Authentication failed');
+    } catch (error) {
+        console.error('Error authenticating student:', error);
+        throw error;
+    }
+};
+
 // Get all applications
 export const getApplications = async () => {
   try {
@@ -91,6 +115,22 @@ export const getApplicationsByType = async (type) => {
     return response.applications || [];
   } catch (error) {
     console.error('Error fetching applications by type:', error);
+    return [];
+  }
+};
+
+// Get student applications (uses authenticated student ID)
+export const getStudentApplications = async () => {
+  try {
+    // Get student ID from localStorage (set during login)
+    const studentId = localStorage.getItem('studentId');
+    if (studentId) {
+      const response = await apiRequest(`/students/${studentId}/applications`);
+      return response.applications || [];
+    }
+    return [];
+  } catch (error) {
+    console.error('Error fetching student applications:', error);
     return [];
   }
 };
@@ -152,6 +192,47 @@ export const getApplicationsStats = async () => {
   } catch (error) {
     console.error('Error fetching applications stats:', error);
     return {};
+  }
+};
+
+// Create a new student
+export const createStudent = async (studentData) => {
+  try {
+    const response = await apiRequest('/students', {
+      method: 'POST',
+      body: JSON.stringify(studentData)
+    });
+    
+    if (response.success) {
+      return response.student;
+    }
+    
+    throw new Error(response.error || 'Failed to create student');
+  } catch (error) {
+    console.error('Error creating student:', error);
+    throw error;
+  }
+};
+
+// Get student by ID
+export const getStudentById = async (id) => {
+  try {
+    const response = await apiRequest(`/students/${id}`);
+    return response.student || null;
+  } catch (error) {
+    console.error('Error fetching student by ID:', error);
+    return null;
+  }
+};
+
+// Get applications by student ID
+export const getApplicationsByStudentId = async (id) => {
+  try {
+    const response = await apiRequest(`/students/${id}/applications`);
+    return response.applications || [];
+  } catch (error) {
+    console.error('Error fetching applications by student ID:', error);
+    return [];
   }
 };
 

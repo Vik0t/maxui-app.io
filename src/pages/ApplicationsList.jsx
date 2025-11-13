@@ -119,9 +119,22 @@ const ApplicationsList = () => {
                                                             <Typography.Body variant="secondary">
                                                                 {getTypeDescription(app)}
                                                             </Typography.Body>
+                                                            {app.expenses && (
+                                                                <Typography.Body variant="secondary">
+                                                                    Расходы: {app.expenses} руб
+                                                                </Typography.Body>
+                                                            )}
+                                                            {app.additional_info && (
+                                                                <Typography.Body variant="secondary">
+                                                                    Дополнительная информация: {app.additional_info}
+                                                                </Typography.Body>
+                                                            )}
                                                             <Typography.Body variant="secondary">
                                                                 Статус: {app.status === 'pending' ? 'Ожидает' :
                                                                          app.status === 'approved' ? 'Одобрено' : 'Отклонено'}
+                                                            </Typography.Body>
+                                                            <Typography.Body variant="secondary">
+                                                                Дата подачи: {new Date(app.timestamp).toLocaleString()}
                                                             </Typography.Body>
                                                         </Flex>
                                                     }

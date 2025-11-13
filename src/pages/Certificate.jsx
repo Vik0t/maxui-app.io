@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, Input } from "@maxhub/max-ui";
-import { addApplication } from "../utils/api";
+import { addApplication, getStudentById } from "../utils/api";
 import "../App.css";
 
 const CertificateSchema = () => {
@@ -15,8 +15,37 @@ const CertificateSchema = () => {
         
         reason: '',
         documents: '',
-        date: ''
+        expenses: '',
+        date: '',
+        student_id: null // Will be set from authenticated student
     });
+    
+    // Load student data on component mount
+    useEffect(() => {
+        loadStudentData();
+    }, []);
+    
+    const loadStudentData = async () => {
+        try {
+            // Get student ID from localStorage (set during login)
+            const studentId = localStorage.getItem('studentId');
+            if (studentId) {
+                const student = await getStudentById(studentId);
+                if (student) {
+                    setFormData(prev => ({
+                        ...prev,
+                        name: student.name,
+                        faculty: student.faculty,
+                        courseWithGroup: student.course_with_group,
+                        contactPhone: student.contact_phone,
+                        student_id: student.id.toString()
+                    }));
+                }
+            }
+        } catch (error) {
+            console.error('Error loading student data:', error);
+        }
+    };
 
     const nextStep = () => {
         setStep(step + 1);
@@ -40,12 +69,19 @@ const CertificateSchema = () => {
             // Save application to server
             const applicationData = {
                 type: 'certificate',
-                ...formData
+                name: formData.name,
+                reason: formData.reason,
+                documents: formData.documents,
+                expenses: formData.expenses,
+                additional_info: formData.documents, // Using documents as additional_info
+                student_id: formData.student_id,
+                timestamp: new Date().toISOString(),
+                status: 'pending'
             };
             
             await addApplication(applicationData);
             
-            console.log('Form submitted:', formData);
+            console.log('Form submitted:', applicationData);
             alert('Заявление успешно отправлено!');
         } catch (error) {
             console.error('Error saving application:', error);
@@ -107,32 +143,40 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                 </Typography.Headline>
                 
                 <Input
+                    value={formData.name}
                     onChange={handleChange}
                     name="name"
                     mode="secondary"
                     placeholder="Введите ФИО"
                     required
+                    readOnly
                 />
                 <Input
+                    value={formData.faculty}
                     onChange={handleChange}
                     name="faculty"
                     mode="secondary"
                     placeholder="Название факультета"
                     required
+                    readOnly
                 />
                 <Input
+                    value={formData.courseWithGroup}
                     onChange={handleChange}
                     name="courseWithGroup"
                     mode="secondary"
                     placeholder="Курс и номер группы через пробел"
                     required
+                    readOnly
                 />
                 <Input
+                    value={formData.contactPhone}
                     onChange={handleChange}
                     name="contactPhone"
                     mode="secondary"
                     placeholder="Номер контактного телефона"
                     required
+                    readOnly
                 />
                 <Button
                     appearance="themed"
@@ -168,6 +212,14 @@ const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
                     mode="secondary"
                     placeholder="Введите причину"
                     required
+                />
+                <Input
+                    value={formData.expenses}
+                    onChange={handleChange}
+                    name="expenses"
+                    mode="secondary"
+                    placeholder="Введите сумму расходов (если применимо)"
+                    type="number"
                 />
                 <Input
                     onChange={handleChange}
