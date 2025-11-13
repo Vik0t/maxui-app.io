@@ -62,6 +62,7 @@ const StudentLogin = () => {
                                         placeholder="Университетская почта (@g.nsu.ru)"
                                         required
                                         type="email"
+                                        className="financeInput"
                                     />
                                     <Input
                                         value={password}
@@ -71,6 +72,7 @@ const StudentLogin = () => {
                                         placeholder="Пароль"
                                         required
                                         type="password"
+                                        className="financeInput"
                                     />
                                     <Button
                                         appearance="themed"
@@ -79,6 +81,7 @@ const StudentLogin = () => {
                                         stretched
                                         type="submit"
                                         disabled={loading}
+                                        style={{ width: '325px' }}
                                     >
                                         {loading ? 'Вход...' : 'Войти'}
                                     </Button>
@@ -91,6 +94,7 @@ const StudentLogin = () => {
                                 size="medium"
                                 stretched
                                 onClick={() => navigate('/')}
+                                style={{ width: '325px' }}
                             >
                                 Назад
                             </Button>

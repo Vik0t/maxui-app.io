@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
-import { MaxUI, Panel, Button, Container, Flex, Typography, Input } from "@maxhub/max-ui";
+import { MaxUI, Panel, Button, Container, Flex, Typography, Input, Grid } from "@maxhub/max-ui";
 import { addApplication, getStudentById } from "../utils/api";
 import "../App.css";
 
@@ -96,14 +96,10 @@ const CertificateSchema = () => {
                     <Container fullWidth={true}>
                         <div className="progress-bar">
                             <div className={`progress-step ${step >= 1 ? "active": ""}`}>
-                                <div className="step-number">
-                                    1
-                                </div>
+                                <div className="step-number"/>
                             </div>
                             <div className={`progress-step ${step >= 2 ? "active": ""}`}>
-                                <div className="step-number">
-                                    2
-                                </div>
+                                <div className="step-number"/>
                             </div>
                         </div>
 
@@ -150,6 +146,7 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                     placeholder="Введите ФИО"
                     required
                     readOnly
+                    className="financeInput"
                 />
                 <Input
                     value={formData.faculty}
@@ -159,6 +156,7 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                     placeholder="Название факультета"
                     required
                     readOnly
+                    className="financeInput"
                 />
                 <Input
                     value={formData.courseWithGroup}
@@ -168,6 +166,7 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                     placeholder="Курс и номер группы через пробел"
                     required
                     readOnly
+                    className="financeInput"
                 />
                 <Input
                     value={formData.contactPhone}
@@ -177,6 +176,7 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                     placeholder="Номер контактного телефона"
                     required
                     readOnly
+                    className="financeInput"
                 />
                 <Button
                     appearance="themed"
@@ -212,6 +212,7 @@ const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
                     mode="secondary"
                     placeholder="Введите причину"
                     required
+                    className="financeInput"
                 />
                 <Input
                     value={formData.expenses}
@@ -220,6 +221,7 @@ const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
                     mode="secondary"
                     placeholder="Введите сумму расходов (если применимо)"
                     type="number"
+                    className="financeInput"
                 />
                 <Input
                     onChange={handleChange}
@@ -227,8 +229,9 @@ const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
                     mode="secondary"
                     placeholder="Прикрепите документы"
                     required
+                    className="financeInput"
                 />
-                <Flex direction="row" gap={12}>
+                <Grid rows={1} cols={2} gapX={15} className="financeGrid">
                     <Button
                         appearance="themed"
                         mode="primary"
@@ -248,7 +251,7 @@ const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
                     >
                         Отправить
                     </Button>
-                </Flex>
+                </Grid>
             </Flex>
         </div>
     );
