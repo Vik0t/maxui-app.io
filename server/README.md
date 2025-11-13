@@ -47,6 +47,7 @@ The server will run on port 3001 by default (http://localhost:3001).
 
 ## Deployment
 
+### Deploying to Vercel
 To deploy to Vercel:
 1. Push the code to your repository
 2. Connect the repository to Vercel
@@ -54,3 +55,6 @@ To deploy to Vercel:
 4. Set the output directory to the root directory
 
 Note: For production use, replace the in-memory data storage with a real database.
+
+### Deploying with GitHub Pages and Self-Hosted Server
+See [GITHUB_DEPLOYMENT.md](GITHUB_DEPLOYMENT.md) for detailed instructions on deploying with GitHub Pages.

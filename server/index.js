@@ -18,10 +18,25 @@ const PORT = process.env.PORT || 3002;
 const JWT_SECRET = process.env.JWT_SECRET || 'max_app_secret_key';
 
 // Middleware
-// Replace the existing app.use(cors()); line with this:
+// Add headers to help with CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
+
 app.use(cors({
-  origin: ['https://vik0t.github.io', 'http://localhost:5173', 'http://localhost:3001', 'http://46.8.69.221:3002'],
-  credentials: true
+  origin: true,
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 
 app.use(bodyParser.json());
@@ -331,6 +346,15 @@ app.get('/api/applications/stats', authenticateToken, async (req, res) => {
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
+});
+
+// CORS test endpoint
+app.get('/api/cors-test', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'CORS is working correctly',
+    origin: req.get('Origin') || 'No origin header'
+  });
 });
 
 // Start server
