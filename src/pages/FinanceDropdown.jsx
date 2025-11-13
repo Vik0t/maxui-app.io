@@ -205,7 +205,7 @@ const CustomDropdown = ({ onChange, name, initialSelectedOption = '' }) => {
               size="large"
               name={name}
             >
-              {selectedOption || 'Choose option'}
+              {selectedOption || 'Выберите причину'}
             </Button>
           </Menu.Button>
 
