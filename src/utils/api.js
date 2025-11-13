@@ -1,5 +1,6 @@
 // Utility functions for handling applications data
-const API_BASE_URL = 'http://localhost:3001/api';
+// const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = 'http://46.8.69.221:3002/api';
 // const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
 
 // Store JWT token
@@ -162,5 +163,23 @@ export const getFinancialAidPayments = async () => {
   } catch (error) {
     console.error('Error fetching financial aid payments:', error);
     return { payments: [], total: 0 };
+  }
+};
+
+// Delete application
+export const deleteApplication = async (id) => {
+  try {
+    const response = await apiRequest(`/applications/${id}`, {
+      method: 'DELETE'
+    });
+    
+    if (response.success) {
+      return response;
+    }
+    
+    throw new Error(response.error || 'Failed to delete application');
+  } catch (error) {
+    console.error('Error deleting application:', error);
+    throw error;
   }
 };

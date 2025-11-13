@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, CellList, CellSimple } from "@maxhub/max-ui";
 import { useNavigate, useParams } from "react-router-dom";
-import { getApplicationsByType, updateApplicationStatus } from "../utils/api";
+import { getApplicationsByType, updateApplicationStatus, deleteApplication } from "../utils/api";
 import "../App.css";
 
 const ApplicationsList = () => {
@@ -34,6 +34,18 @@ const ApplicationsList = () => {
         } catch (error) {
             console.error('Error updating application status:', error);
             alert('Error updating application status: ' + error.message);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Вы уверены, что хотите удалить эту заявку?')) {
+            try {
+                await deleteApplication(id);
+                loadApplications(); // Refresh the list
+            } catch (error) {
+                console.error('Error deleting application:', error);
+                alert('Error deleting application: ' + error.message);
+            }
         }
     };
 
@@ -90,29 +102,45 @@ const ApplicationsList = () => {
                             ) : (
                                 <CellList filled mode="island" style={{ width: '100%', maxWidth: '800px' }}>
                                     {applications.map((app) => (
-                                        <CellSimple
-                                            key={app.id}
-                                            onClick={() => navigate(`/dean/applications/${type}/${app.id}`)}
-                                            showChevron
-                                            title={app.name}
-                                            subtitle={
-                                                <Flex direction="column" gap={4}>
-                                                    <Typography.Body variant="secondary">
-                                                        Факультет: {app.faculty}
-                                                    </Typography.Body>
-                                                    <Typography.Body variant="secondary">
-                                                        Курс и группа: {app.courseWithGroup}
-                                                    </Typography.Body>
-                                                    <Typography.Body variant="secondary">
-                                                        {getTypeDescription(app)}
-                                                    </Typography.Body>
-                                                    <Typography.Body variant="secondary">
-                                                        Статус: {app.status === 'pending' ? 'Ожидает' :
-                                                                 app.status === 'approved' ? 'Одобрено' : 'Отклонено'}
-                                                    </Typography.Body>
-                                                </Flex>
-                                            }
-                                        />
+                                        <div key={app.id} style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                            <div style={{ flex: 1 }}>
+                                                <CellSimple
+                                                    onClick={() => navigate(`/dean/applications/${type}/${app.id}`)}
+                                                    showChevron
+                                                    title={app.name}
+                                                    subtitle={
+                                                        <Flex direction="column" gap={4}>
+                                                            <Typography.Body variant="secondary">
+                                                                Факультет: {app.faculty}
+                                                            </Typography.Body>
+                                                            <Typography.Body variant="secondary">
+                                                                Курс и группа: {app.courseWithGroup}
+                                                            </Typography.Body>
+                                                            <Typography.Body variant="secondary">
+                                                                {getTypeDescription(app)}
+                                                            </Typography.Body>
+                                                            <Typography.Body variant="secondary">
+                                                                Статус: {app.status === 'pending' ? 'Ожидает' :
+                                                                         app.status === 'approved' ? 'Одобрено' : 'Отклонено'}
+                                                            </Typography.Body>
+                                                        </Flex>
+                                                    }
+                                                />
+                                            </div>
+                                            <div style={{ marginLeft: '10px' }}>
+                                                <Button
+                                                    appearance="negative"
+                                                    mode="secondary"
+                                                    size="small"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDelete(app.id);
+                                                    }}
+                                                >
+                                                    Удалить
+                                                </Button>
+                                            </div>
+                                        </div>
                                     ))}
                                 </CellList>
                             )}

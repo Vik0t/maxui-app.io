@@ -9,7 +9,8 @@ const {
   createApplication,
   updateApplicationStatus,
   getDeanByUsername,
-  getApplicationsStats
+  getApplicationsStats,
+  deleteApplication
 } = require('./db');
 
 const app = express();
@@ -19,7 +20,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'max_app_secret_key';
 // Middleware
 // Replace the existing app.use(cors()); line with this:
 app.use(cors({
-  origin: ['https://vik0t.github.io', 'http://localhost:5173', 'http://localhost:3001'],
+  origin: ['https://vik0t.github.io', 'http://localhost:5173', 'http://localhost:3001', 'http://46.8.69.221:3002'],
   credentials: true
 }));
 
@@ -277,6 +278,26 @@ app.put('/api/applications/:id/status', authenticateToken, async (req, res) => {
     res.json({
       success: true,
       application: updatedApplication
+    });
+  } catch (error) {
+    if (error.message === 'Application not found') {
+      return res.status(404).json({ error: 'Application not found' });
+    }
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Delete application
+app.delete('/api/applications/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Delete application from database
+    await deleteApplication(id);
+    
+    res.json({
+      success: true,
+      message: 'Application deleted successfully'
     });
   } catch (error) {
     if (error.message === 'Application not found') {

@@ -129,7 +129,7 @@ const getDeanByUsername = (username) => {
 const getApplicationsStats = () => {
     return new Promise((resolve, reject) => {
         const statsSql = `
-            SELECT 
+            SELECT
                 COUNT(*) as total,
                 COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
                 COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved,
@@ -149,6 +149,23 @@ const getApplicationsStats = () => {
     });
 };
 
+// Delete application by ID
+const deleteApplication = (id) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM applications WHERE id = ?';
+        
+        db.run(sql, [id], function(err) {
+            if (err) {
+                reject(err);
+            } else if (this.changes === 0) {
+                reject(new Error('Application not found'));
+            } else {
+                resolve({ message: 'Application deleted successfully' });
+            }
+        });
+    });
+};
+
 module.exports = {
     db,
     getApplications,
@@ -157,5 +174,6 @@ module.exports = {
     createApplication,
     updateApplicationStatus,
     getDeanByUsername,
-    getApplicationsStats
+    getApplicationsStats,
+    deleteApplication
 };
