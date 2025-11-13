@@ -30,7 +30,7 @@ const ApplicationsList = () => {
     const handleStatusChange = async (id, status) => {
         try {
             await updateApplicationStatus(id, status);
-            loadApplications();
+            loadApplications(); // Reload applications to reflect changes
         } catch (error) {
             console.error('Error updating application status:', error);
             alert('Error updating application status: ' + error.message);
