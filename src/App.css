@@ -1,12 +1,12 @@
 .general {
   width: 100%;
-  height: 100vh;
-  max-height: 100vh;
+  height: calc(100vh - 20px);
+  max-height: calc(100vh - 20px);
   overflow: hidden;
-  background-color: var(--background-primary, #ffffff);
+  background-color: var(--background-primary, #17181c);
   margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  padding: 10px;
 }
 
 .financeInput {
