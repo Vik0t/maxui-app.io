@@ -195,9 +195,6 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
 
 const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
     const canProceed = formData.reason && formData.documents;
-    const today = new Date();
-    const date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
-    formData.date = date;
 
     return (
         <div className="step">
@@ -207,6 +204,7 @@ const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
                 </Typography.Headline>
                 
                 <Input
+                    value={formData.reason}
                     onChange={handleChange}
                     name="reason"
                     mode="secondary"
@@ -224,6 +222,7 @@ const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
                     className="financeInput"
                 />
                 <Input
+                    value={formData.documents}
                     onChange={handleChange}
                     name="documents"
                     mode="secondary"

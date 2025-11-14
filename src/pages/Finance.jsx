@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, Input, Grid } from "@maxhub/max-ui";
 import { addApplication, getStudentById } from "../utils/api";
@@ -20,6 +20,7 @@ const FinanceSchema = () => {
         
         reason: '',
         documents: '',
+        expenses: '',
         date: '',
         student_id: null // Will be set from authenticated student
     });
@@ -77,9 +78,6 @@ const FinanceSchema = () => {
                 reason: formData.reason,
                 documents: formData.documents,
                 expenses: formData.expenses,
-                passSerial: formData.passSerial,
-                passPlace: formData.passPlace,
-                registration: formData.registration,
                 additional_info: `Паспорт: ${formData.passSerial}, Выдан: ${formData.passPlace}, Регистрация: ${formData.registration}, Документы: ${formData.documents}`,
                 student_id: formData.student_id,
                 timestamp: new Date().toISOString(),
@@ -269,8 +267,6 @@ const Step2 = ({ formData, handleChange, nextStep, prevStep }) => {
 
 const Step3 = ({ formData, handleChange, prevStep, handleSubmit}) => {
     const canProceed = formData.reason && formData.documents;
-    const today = new Date();
-    formData.date = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
 
     return (
         <div className="step">
@@ -296,6 +292,7 @@ const Step3 = ({ formData, handleChange, prevStep, handleSubmit}) => {
                 />
 
                 <Input
+                    value={formData.documents}
                     onChange={handleChange}
                     name="documents"
                     mode="secondary"
