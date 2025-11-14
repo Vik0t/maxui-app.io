@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, Input, Grid } from "@maxhub/max-ui";
+import { useNavigate } from "react-router-dom";
 import { addApplication, getStudentById } from "../utils/api";
 import "../App.css";
 import CustomDropdown from "./FinanceDropdown";
@@ -24,6 +25,8 @@ const FinanceSchema = () => {
         date: '',
         student_id: null // Will be set from authenticated student
     });
+    
+    const navigate = useNavigate();
     
     // Load student data on component mount
     useEffect(() => {
@@ -88,6 +91,10 @@ const FinanceSchema = () => {
             
             console.log('Form submitted:', applicationData);
             alert('Заявление успешно отправлено!');
+            
+            // Redirect to student page after successful submission
+            navigate('/student');
+            
         } catch (error) {
             console.error('Error saving application:', error);
             alert('Ошибка при отправке заявления: ' + error.message);

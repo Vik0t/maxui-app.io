@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "@maxhub/max-ui/dist/styles.css";
 import { MaxUI, Panel, Button, Container, Flex, Typography, Input, Grid } from "@maxhub/max-ui";
+import { useNavigate } from "react-router-dom";
 import { addApplication, getStudentById } from "../utils/api";
 import "../App.css";
 
@@ -19,6 +20,8 @@ const CertificateSchema = () => {
         date: '',
         student_id: null // Will be set from authenticated student
     });
+    
+    const navigate = useNavigate();
     
     // Load student data on component mount
     useEffect(() => {
@@ -83,6 +86,10 @@ const CertificateSchema = () => {
             
             console.log('Form submitted:', applicationData);
             alert('Заявление успешно отправлено!');
+            
+            // Redirect to student page after successful submission
+            navigate('/student');
+            
         } catch (error) {
             console.error('Error saving application:', error);
             alert('Ошибка при отправке заявления: ' + error.message);
@@ -147,7 +154,6 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                             mode="secondary"
                             placeholder="Введите ФИО"
                             required
-                            readOnly
                             className="financeInput"
                         />
                     </div>
@@ -159,7 +165,6 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                             mode="secondary"
                             placeholder="Название факультета"
                             required
-                            readOnly
                             className="financeInput"
                         />
                     </div>
@@ -171,7 +176,6 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                             mode="secondary"
                             placeholder="Курс и номер группы через пробел"
                             required
-                            readOnly
                             className="financeInput"
                         />
                     </div>
@@ -183,7 +187,6 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
                             mode="secondary"
                             placeholder="Номер контактного телефона"
                             required
-                            readOnly
                             className="financeInput"
                         />
                     </div>
