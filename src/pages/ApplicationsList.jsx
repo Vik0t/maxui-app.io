@@ -76,8 +76,9 @@ const ApplicationsList = () => {
             <MaxUI>
                 <Panel style={{ height: '100vh', overflowY: 'auto' }}>
                     <Container fullWidth={true}>
+                    <div className="form-wrapper">
                         <Flex direction="column" gap={20} style={{ padding: '20px 0', alignItems: 'center' }}>
-                            <Flex direction="row" justify="space-between" align="center" style={{ width: '100%', maxWidth: '800px' }}>
+                            <Flex direction="row" justify="space-between" align="center" style={{ width: '100%' }}>
                                 <Typography.Headline variant='large-strong'>
                                     {getTypeTitle()}
                                 </Typography.Headline>
@@ -100,7 +101,7 @@ const ApplicationsList = () => {
                                     Нет заявок
                                 </Typography.Headline>
                             ) : (
-                                <CellList filled mode="island" style={{ width: '100%', maxWidth: '800px' }}>
+                                <CellList filled mode="island" style={{ width: '100%' }}>
                                     {applications.map((app) => (
                                         <div key={app.id} style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                             <div style={{ flex: 1 }}>
@@ -158,6 +159,7 @@ const ApplicationsList = () => {
                                 </CellList>
                             )}
                         </Flex>
+                    </div>
                     </Container>
                 </Panel>
             </MaxUI>

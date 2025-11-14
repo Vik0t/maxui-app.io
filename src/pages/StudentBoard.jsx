@@ -31,7 +31,8 @@ const StudentBoard = () => {
             <MaxUI>
                 <Panel centeredX centeredY style={{ height: '100vh' }}>
                     <Container fullWidth={true}>
-                        <Flex direction="column" gap={20}>
+                    <div className="form-wrapper">
+                        <Flex direction="column" gap={10}>
                             <Flex direction="row" justify="space-between" align="center" gap={70}>
                                 <Typography.Headline variant='large-strong'>
                                     Панель студента
@@ -46,44 +47,45 @@ const StudentBoard = () => {
                                 </Button>
                             </Flex>
                             
-                            <Flex direction="column" gap={16} wrap="wrap">
-                                <Link to="/student/profile" style={{ textDecoration: 'none'}}>
+                            <Flex direction="column" gap={20} align="center">
+                                <Link to="/student/profile" style={{ textDecoration: 'none', width: '100%', maxWidth: '350px' }}>
                                     <Button
                                         appearance="neutral"
-                                        mode="primary"
+                                        mode="secondary"
                                         size="large"
-                                        stretched
                                         className="studentBoardButton"
+                                        style={{ width: '100%' }}
                                     >
                                         Мой профиль
                                     </Button>
                                 </Link>
                                 
-                                <Link to="/finance" style={{ textDecoration: 'none'}}>
+                                <Link to="/finance" style={{ textDecoration: 'none', width: '100%', maxWidth: '350px' }}>
                                     <Button
                                         appearance="neutral"
                                         mode="secondary"
                                         size="large"
-                                        stretched
                                         className="studentBoardButton"
+                                        style={{ width: '100%' }}
                                     >
                                         Подать заявление на матпомощь
                                     </Button>
                                 </Link>
                                 
-                                <Link to="/certificate" style={{ textDecoration: 'none'}}>
+                                <Link to="/certificate" style={{ textDecoration: 'none', width: '100%', maxWidth: '350px' }}>
                                     <Button
                                         appearance="neutral"
                                         mode="secondary"
                                         size="large"
-                                        stretched
                                         className="studentBoardButton"
+                                        style={{ width: '100%' }}
                                     >
                                         Заявление на справку об обучении
                                     </Button>
                                 </Link>
                             </Flex>
                         </Flex>
+                    </div>
                     </Container>
                 </Panel>
             </MaxUI>

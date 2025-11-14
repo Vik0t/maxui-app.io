@@ -133,62 +133,74 @@ const Step1 = ({ formData, handleChange, nextStep }) => {
 
     return (
         <div className="step">
-            <Flex direction="column" gap={12}>
-                <Typography.Headline variant="medium-strong">
-                    Основная информация
-                </Typography.Headline>
-                
-                <Input
-                    value={formData.name}
-                    onChange={handleChange}
-                    name="name"
-                    mode="secondary"
-                    placeholder="Введите ФИО"
-                    required
-                    readOnly
-                    className="financeInput"
-                />
-                <Input
-                    value={formData.faculty}
-                    onChange={handleChange}
-                    name="faculty"
-                    mode="secondary"
-                    placeholder="Название факультета"
-                    required
-                    readOnly
-                    className="financeInput"
-                />
-                <Input
-                    value={formData.courseWithGroup}
-                    onChange={handleChange}
-                    name="courseWithGroup"
-                    mode="secondary"
-                    placeholder="Курс и номер группы через пробел"
-                    required
-                    readOnly
-                    className="financeInput"
-                />
-                <Input
-                    value={formData.contactPhone}
-                    onChange={handleChange}
-                    name="contactPhone"
-                    mode="secondary"
-                    placeholder="Номер контактного телефона"
-                    required
-                    readOnly
-                    className="financeInput"
-                />
-                <Button
-                    appearance="themed"
-                    mode="primary"
-                    size="medium"
-                    stretched
-                    onClick={nextStep}
-                    disabled={!canProceed}
-                >
-                    Далее
-                </Button>
-            </Flex>
+            <div className="form-wrapper">
+                <Flex direction="column" gap={12}>
+                    <Typography.Headline variant="medium-strong">
+                        Основная информация
+                    </Typography.Headline>
+                    
+                    <div className="input-wrapper">
+                        <Input
+                            value={formData.name}
+                            onChange={handleChange}
+                            name="name"
+                            mode="secondary"
+                            placeholder="Введите ФИО"
+                            required
+                            readOnly
+                            className="financeInput"
+                        />
+                    </div>
+                    <div className="input-wrapper">
+                        <Input
+                            value={formData.faculty}
+                            onChange={handleChange}
+                            name="faculty"
+                            mode="secondary"
+                            placeholder="Название факультета"
+                            required
+                            readOnly
+                            className="financeInput"
+                        />
+                    </div>
+                    <div className="input-wrapper">
+                        <Input
+                            value={formData.courseWithGroup}
+                            onChange={handleChange}
+                            name="courseWithGroup"
+                            mode="secondary"
+                            placeholder="Курс и номер группы через пробел"
+                            required
+                            readOnly
+                            className="financeInput"
+                        />
+                    </div>
+                    <div className="input-wrapper">
+                        <Input
+                            value={formData.contactPhone}
+                            onChange={handleChange}
+                            name="contactPhone"
+                            mode="secondary"
+                            placeholder="Номер контактного телефона"
+                            required
+                            readOnly
+                            className="financeInput"
+                        />
+                    </div>
+                    <div className="button-wrapper">
+                        <Button
+                            appearance="themed"
+                            mode="primary"
+                            size="medium"
+                            stretched
+                            onClick={nextStep}
+                            disabled={!canProceed}
+                        >
+                            Далее
+                        </Button>
+                    </div>
+                </Flex>
+            </div>
         </div>
     );
 };
@@ -198,60 +210,72 @@ const Step2 = ({ formData, handleChange, prevStep, handleSubmit }) => {
 
     return (
         <div className="step">
-            <Flex direction="column" gap={12}>
-                <Typography.Headline variant="medium-strong">
-                    Документы
-                </Typography.Headline>
-                
-                <Input
-                    value={formData.reason}
-                    onChange={handleChange}
-                    name="reason"
-                    mode="secondary"
-                    placeholder="Введите причину"
-                    required
-                    className="financeInput"
-                />
-                <Input
-                    value={formData.expenses}
-                    onChange={handleChange}
-                    name="expenses"
-                    mode="secondary"
-                    placeholder="Введите сумму расходов (если применимо)"
-                    type="number"
-                    className="financeInput"
-                />
-                <Input
-                    value={formData.documents}
-                    onChange={handleChange}
-                    name="documents"
-                    mode="secondary"
-                    placeholder="Прикрепите документы"
-                    required
-                    className="financeInput"
-                />
-                <Grid rows={1} cols={2} gapX={15} className="financeGrid">
-                    <Button
-                        appearance="themed"
-                        mode="primary"
-                        size="medium"
-                        stretched
-                        onClick={prevStep}
-                    >
-                        Назад
-                    </Button>
-                    <Button
-                        appearance="themed"
-                        mode="primary"
-                        size="medium"
-                        stretched
-                        onClick={handleSubmit}
-                        disabled={!canProceed}
-                    >
-                        Отправить
-                    </Button>
-                </Grid>
-            </Flex>
+            <div className="form-wrapper">
+                <Flex direction="column" gap={12}>
+                    <Typography.Headline variant="medium-strong">
+                        Документы
+                    </Typography.Headline>
+                    
+                    <div className="input-wrapper">
+                        <Input
+                            value={formData.reason}
+                            onChange={handleChange}
+                            name="reason"
+                            mode="secondary"
+                            placeholder="Введите причину"
+                            required
+                            className="financeInput"
+                        />
+                    </div>
+                    <div className="input-wrapper">
+                        <Input
+                            value={formData.expenses}
+                            onChange={handleChange}
+                            name="expenses"
+                            mode="secondary"
+                            placeholder="Введите сумму расходов (если применимо)"
+                            type="number"
+                            className="financeInput"
+                        />
+                    </div>
+                    <div className="input-wrapper">
+                        <Input
+                            value={formData.documents}
+                            onChange={handleChange}
+                            name="documents"
+                            mode="secondary"
+                            placeholder="Прикрепите документы"
+                            required
+                            className="financeInput"
+                        />
+                    </div>
+                    <Grid rows={1} cols={2} gapX={15} className="financeGrid">
+                        <div className="button-wrapper">
+                            <Button
+                                appearance="themed"
+                                mode="primary"
+                                size="medium"
+                                stretched
+                                onClick={prevStep}
+                            >
+                                Назад
+                            </Button>
+                        </div>
+                        <div className="button-wrapper">
+                            <Button
+                                appearance="themed"
+                                mode="primary"
+                                size="medium"
+                                stretched
+                                onClick={handleSubmit}
+                                disabled={!canProceed}
+                            >
+                                Отправить
+                            </Button>
+                        </div>
+                    </Grid>
+                </Flex>
+            </div>
         </div>
     );
 };

@@ -68,9 +68,10 @@ const ApplicationDetails = () => {
             <MaxUI>
                 <Panel style={{ height: '100vh', overflowY: 'auto' }}>
                     <Container fullWidth={true}>
-                        <Flex direction="column" gap={20} style={{ padding: '20px 0', alignItems: 'center' }}>
+                        <div className="form-wrapper">
+                            <Flex direction="column" gap={20} style={{ padding: '20px 0', alignItems: 'center' }}>
                             <Flex direction="row" justify="space-between" align="center" style={{ width: '100%', maxWidth: '800px' }}>
-                                <Typography.Headline variant='large-strong'>
+                                <Typography.Headline variant='large-strong' style={{ textAlign: 'left', wordBreak: 'break-word' }}>
                                     {application ? getTypeTitle(application) : 'Заявка'}
                                 </Typography.Headline>
                                 <Button
@@ -84,11 +85,11 @@ const ApplicationDetails = () => {
                             </Flex>
                             
                             {loading ? (
-                                <Typography.Headline variant="medium">
+                                <Typography.Headline variant="medium" style={{ textAlign: 'center' }}>
                                     Загрузка...
                                 </Typography.Headline>
                             ) : !application ? (
-                                <Typography.Headline variant="medium">
+                                <Typography.Headline variant="medium" style={{ textAlign: 'center' }}>
                                     Заявка не найдена
                                 </Typography.Headline>
                             ) : (
@@ -99,56 +100,59 @@ const ApplicationDetails = () => {
                                             border: '1px solid var(--color-border-primary)',
                                             borderRadius: '8px',
                                             backgroundColor: 'var(--color-background-primary)',
-                                            width: '100%'
+                                            width: '100%',
+                                            boxSizing: 'border-box'
                                         }}
                                     >
                                         <Flex direction="column" gap={16}>
-                                            <Typography.Headline variant="large-strong">
+                                            <Typography.Headline variant="large-strong" style={{ wordBreak: 'break-word' }}>
                                                 {application.name}
                                             </Typography.Headline>
                                             
                                             <Flex direction="column" gap={12}>
-                                                <Typography.Headline variant="medium">
+                                                <Typography.Headline variant="medium" style={{ wordBreak: 'break-word' }}>
                                                     Факультет: {application.faculty}
                                                 </Typography.Headline>
-                                                <Typography.Headline variant="medium">
+                                                <Typography.Headline variant="medium" style={{ wordBreak: 'break-word' }}>
                                                     Курс и группа: {application.courseWithGroup}
                                                 </Typography.Headline>
-                                                <Typography.Headline variant="medium">
+                                                <Typography.Headline variant="medium" style={{ wordBreak: 'break-word' }}>
                                                     Телефон: {application.contactPhone}
                                                 </Typography.Headline>
-                                                <Typography.Headline variant="medium">
+                                                <Typography.Headline variant="medium" style={{ wordBreak: 'break-word' }}>
                                                     {getTypeDescription(application)}
                                                 </Typography.Headline>
                                                 {application.expenses && (
-                                                    <Typography.Headline variant="medium">
+                                                    <Typography.Headline variant="medium" style={{ wordBreak: 'break-word' }}>
                                                         Расходы: {application.expenses} руб
                                                     </Typography.Headline>
                                                 )}
-                                                <Typography.Headline variant="medium">
+                                                <Typography.Headline variant="medium" style={{ wordBreak: 'break-word' }}>
                                                     Дата подачи: {new Date(application.timestamp).toLocaleString()}
                                                 </Typography.Headline>
-                                                <Typography.Headline variant="medium">
+                                                <Typography.Headline variant="medium" style={{ wordBreak: 'break-word' }}>
                                                     Статус: {application.status === 'pending' ? 'Ожидает' :
                                                              application.status === 'approved' ? 'Одобрено' : 'Отклонено'}
                                                 </Typography.Headline>
                                             </Flex>
                                             
                                             {application.status === 'pending' && (
-                                                <Flex direction="row" gap={12}>
+                                                <Flex direction="row" gap={12} style={{ flexWrap: 'wrap' }}>
                                                     <Button
-                                                        appearance="themed"
-                                                        mode="positive"
-                                                        size="medium"
+                                                        appearance="positive"
+                                                        mode="primary"
+                                                        size="large"
                                                         onClick={() => handleStatusChange('approved')}
+                                                        style={{ minWidth: '120px' }}
                                                     >
                                                         Одобрить
                                                     </Button>
                                                     <Button
-                                                        appearance="themed"
-                                                        mode="negative"
-                                                        size="medium"
+                                                        appearance="negative"
+                                                        mode="primary"
+                                                        size="large"
                                                         onClick={() => handleStatusChange('rejected')}
+                                                        style={{ minWidth: '120px' }}
                                                     >
                                                         Отклонить
                                                     </Button>
@@ -159,6 +163,7 @@ const ApplicationDetails = () => {
                                 </Flex>
                             )}
                         </Flex>
+                    </div>
                     </Container>
                 </Panel>
             </MaxUI>

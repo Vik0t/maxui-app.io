@@ -39,51 +39,104 @@ const DeanLogin = () => {
     return (
         <div className="general">
             <MaxUI>
-                <Panel centeredX centeredY style={{ height: '100vh' }}>
-                    <Container fullWidth={true}>
-                        <Flex direction="column" gap={20}>
-                            <Typography.Headline variant='large-strong'>
+                <Panel centeredX centeredY style={{ height: '100vh', padding: '20px' }}>
+                    <Container fullWidth={true} style={{ maxWidth: '400px', width: '100%' }}>
+                        <Flex direction="column" gap={24} align="center" style={{ width: '100%' }}>
+                            <Typography.Headline variant='large-strong' style={{ textAlign: 'center' }}>
                                 Вход для деканата
                             </Typography.Headline>
                             
                             {error && (
-                                <Typography.Headline variant="medium" style={{ color: 'var(--color-text-negative)' }}>
+                                <Typography.Headline variant="medium" style={{ color: 'var(--color-text-negative)', textAlign: 'center' }}>
                                     {error}
                                 </Typography.Headline>
                             )}
                             
-                            <form onSubmit={handleSubmit}>
-                                <Flex direction="column" gap={16}>
-                                    <Input
-                                        onChange={handleChange}
-                                        name="username"
-                                        mode="secondary"
-                                        placeholder="Логин"
-                                        value={loginData.username}
-                                        required
-                                        className="financeInput"
-                                    />
-                                    <Input
-                                        onChange={handleChange}
-                                        name="password"
-                                        mode="secondary"
-                                        placeholder="Пароль"
-                                        type="password"
-                                        value={loginData.password}
-                                        required
-                                        className="financeInput"
-                                    />
-                                    <Button
-                                        appearance="themed"
-                                        mode="primary"
-                                        size="large"
-                                        stretched
-                                        type="submit"
-                                    >
-                                        Войти
-                                    </Button>
+                            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                                <Flex direction="column" gap={20} align="center" style={{ width: '100%' }}>
+                                    <div style={{ 
+                                        width: '100%', 
+                                        maxWidth: '325px',
+                                        minWidth: '280px',
+                                        position: 'relative'
+                                    }}>
+                                        <Input
+                                            onChange={handleChange}
+                                            name="username"
+                                            mode="secondary"
+                                            placeholder="Логин"
+                                            value={loginData.username}
+                                            required
+                                            style={{ 
+                                                width: '100%', 
+                                                height: '48px',
+                                                paddingRight: '40px',
+                                                boxSizing: 'border-box'
+                                            }}
+                                        />
+                                    </div>
+                                    <div style={{ 
+                                        width: '100%', 
+                                        maxWidth: '325px',
+                                        minWidth: '280px',
+                                        position: 'relative'
+                                    }}>
+                                        <Input
+                                            onChange={handleChange}
+                                            name="password"
+                                            mode="secondary"
+                                            placeholder="Пароль"
+                                            type="password"
+                                            value={loginData.password}
+                                            required
+                                            style={{ 
+                                                width: '100%', 
+                                                height: '48px',
+                                                paddingRight: '40px',
+                                                boxSizing: 'border-box'
+                                            }}
+                                        />
+                                    </div>
+                                    <div style={{ 
+                                        width: '100%', 
+                                        maxWidth: '325px',
+                                        minWidth: '280px'
+                                    }}>
+                                        <Button
+                                            appearance="themed"
+                                            mode="primary"
+                                            size="medium"
+                                            stretched
+                                            type="submit"
+                                            style={{ 
+                                                width: '100%', 
+                                                height: '48px'
+                                            }}
+                                        >
+                                            Войти
+                                        </Button>
+                                    </div>
                                 </Flex>
                             </form>
+                            <div style={{ 
+                                width: '100%', 
+                                maxWidth: '325px',
+                                minWidth: '280px'
+                            }}>
+                                <Button
+                                    appearance="neutral"
+                                    mode="secondary"
+                                    size="medium"
+                                    stretched
+                                    onClick={() => navigate('/')}
+                                    style={{ 
+                                        width: '100%', 
+                                        height: '48px'
+                                    }}
+                                >
+                                    Назад
+                                </Button>
+                            </div>
                         </Flex>
                     </Container>
                 </Panel>

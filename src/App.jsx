@@ -4,7 +4,7 @@ import "./App.css";
 
 export default function App() {
   return (
-    <div className="general"> {/* Changed 'class' to 'className' */}
+    <div className="general">
       <Main />
     </div>
   );

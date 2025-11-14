@@ -54,11 +54,11 @@ const DeanBoard = () => {
     return (
         <div className="general">
             <MaxUI>
-                <Panel centeredX centeredY style={{ height: '100vh' }}>
-                    <Container fullWidth={true}>
-                        <Flex direction="column" gap={40}>
-                            <Flex direction="row" justify="space-between" align="center" gap={70}>
-                                <Typography.Headline variant='large-strong'>
+                <Panel centeredX centeredY style={{ height: '100vh', padding: '20px' }}>
+                    <Container fullWidth={true} style={{ maxWidth: '600px', width: '100%' }}>
+                        <Flex direction="column" gap={40} align="center" style={{ width: '100%' }}>
+                            <Flex direction="row" justify="space-between" align="center" style={{ width: '100%', maxWidth: '500px' }}>
+                                <Typography.Headline variant='large-strong' style={{ textAlign: 'center', flex: 1 }}>
                                     Панель деканата
                                 </Typography.Headline>
                                 <Button
@@ -66,105 +66,121 @@ const DeanBoard = () => {
                                     mode="secondary"
                                     size="medium"
                                     onClick={handleLogout}
+                                    style={{ minWidth: '100px' }}
                                 >
                                     Выйти
                                 </Button>
                             </Flex>
+                        
+                        <Flex direction="column" gap={16} align="center" style={{ width: '100%' }}>
+                            <Typography.Headline variant="medium-strong" style={{ textAlign: 'center', width: '100%' }}>
+                                Заявки студентов
+                            </Typography.Headline>
                             
-                            <Flex direction="column" gap={16}>
-                                <Typography.Headline variant="medium-strong">
-                                    Заявки студентов
-                                </Typography.Headline>
-                                
-                                <Flex direction="column" gap={15}>
+                            <Flex direction="column" gap={15} align="center" style={{ width: '100%' }}>
+                                <div style={{ width: '100%', maxWidth: '500px' }}>
                                     <Button
                                         appearance="themed"
                                         mode="primary"
                                         size="large"
                                         stretched
                                         onClick={() => navigate('/dean/applications/financial_aid')}
+                                        style={{ width: '100%', height: '60px' }}
                                     >
-                                        <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium-strong" className="financeInput">
+                                        <Flex direction="row" justify="space-between" align="center" style={{ width: '100%' }}>
+                                            <Typography.Headline variant="medium-strong">
                                                 Заявки на матпомощь: {stats.financialAid}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
-                                    
+                                </div>
+                                
+                                <div style={{ width: '100%', maxWidth: '500px' }}>
                                     <Button
                                         appearance="themed"
                                         mode="primary"
                                         size="large"
                                         stretched
                                         onClick={() => navigate('/dean/applications/certificate')}
+                                        style={{ width: '100%', height: '60px' }}
                                     >
-                                        <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium-strong" className="financeInput">
+                                        <Flex direction="row" justify="space-between" align="center" style={{ width: '100%' }}>
+                                            <Typography.Headline variant="medium-strong">
                                                 Заявки на справки: {stats.certificates}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
-                                </Flex>
+                                </div>
                             </Flex>
+                        </Flex>
+                        
+                        <Flex direction="column" gap={16} align="center" style={{ width: '100%' }}>
+                            <Typography.Headline variant="medium-strong" style={{ textAlign: 'center', width: '100%' }}>
+                                Статистика
+                            </Typography.Headline>
                             
-                            <Flex direction="column" gap={16}>
-                                <Typography.Headline variant="medium-strong">
-                                    Статистика
-                                </Typography.Headline>
-                                
-                                <Flex direction="column" gap={12}>
+                            <Flex direction="column" gap={12} align="center" style={{ width: '100%' }}>
+                                <div style={{ width: '100%', maxWidth: '500px' }}>
                                     <Button
                                         appearance="themed"
                                         mode="secondary"
                                         size="large"
                                         stretched
+                                        style={{ width: '100%', height: '60px', pointerEvents: 'none' }}
                                     >
-                                        <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium" className="financeInput">
+                                        <Flex direction="row" justify="space-between" align="center" style={{ width: '100%' }}>
+                                            <Typography.Headline variant="medium">
                                                 Всего студентов: {stats.studentCount}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
-                                    
+                                </div>
+                                
+                                <div style={{ width: '100%', maxWidth: '500px' }}>
                                     <Button
                                         appearance="themed"
                                         mode="secondary"
                                         size="large"
                                         stretched
+                                        style={{ width: '100%', height: '60px', pointerEvents: 'none' }}
                                     >
-                                        <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium" className="financeInput">
+                                        <Flex direction="row" justify="space-between" align="center" style={{ width: '100%' }}>
+                                            <Typography.Headline variant="medium">
                                                 Обработано заявок: {stats.approved + stats.rejected}
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
-                                </Flex>
+                                </div>
                             </Flex>
+                        </Flex>
+                        
+                        <Flex direction="column" gap={16} align="center" style={{ width: '100%' }}>
+                            <Typography.Headline variant="medium-strong" style={{ textAlign: 'center', width: '100%' }}>
+                                Финансовая помощь
+                            </Typography.Headline>
                             
-                            <Flex direction="column" gap={16}>
-                                <Typography.Headline variant="medium-strong">
-                                    Финансовая помощь
-                                </Typography.Headline>
-                                
-                                <Flex direction="column" gap={12}>
+                            <Flex direction="column" gap={12} align="center" style={{ width: '100%' }}>
+                                <div style={{ width: '100%', maxWidth: '500px' }}>
                                     <Button
                                         appearance="themed"
                                         mode="secondary"
                                         size="large"
                                         stretched
                                         onClick={() => navigate('/dean/payments')}
+                                        style={{ width: '100%', height: '60px' }}
                                     >
-                                        <Flex direction="row" justify="space-between" align="center">
-                                            <Typography.Headline variant="medium" className="financeInput">
+                                        <Flex direction="row" justify="space-between" align="center" style={{ width: '100%' }}>
+                                            <Typography.Headline variant="medium">
                                                 Сумма выплат: {payments.total} руб
                                             </Typography.Headline>
                                         </Flex>
                                     </Button>
-                                </Flex>
+                                </div>
                             </Flex>
                         </Flex>
-                    </Container>
-                </Panel>
+                    </Flex>
+                </Container>
+            </Panel>
             </MaxUI>
         </div>
     );

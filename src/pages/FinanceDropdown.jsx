@@ -198,16 +198,15 @@ const CustomDropdown = ({ onChange, name, initialSelectedOption = '' }) => {
               mode="secondary"
               style={{ 
                 textDecoration: 'none',
-                width: 325
+                width: '275px'
               }}
-              className='financeInput'
               stretched
               size="large"
               name={name}
             >
               {selectedOption || 'Выберите причину'}
             </Button>
-          </Menu.Button>
+          </Menu.Button> 
 
           {open && (
             <Menu.Items static className="absolute z-10 mt-1 w-full">

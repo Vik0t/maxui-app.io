@@ -96,9 +96,9 @@ const StudentProfile = () => {
             <MaxUI>
                 <Panel style={{ height: '100vh', overflowY: 'auto' }}>
                     <Container fullWidth={true}>
-                        <Flex direction="column" gap={20} style={{ padding: '20px 0', alignItems: 'center' }}>
-                            <Flex direction="row" justify="space-between" align="center" style={{ width: '100%', maxWidth: '800px' }}>
-                                <Typography.Headline variant='large-strong'>
+                        <div className="form-wrapper">
+                            <Flex direction="column" gap={20} style={{ padding: '20px 0', alignItems: 'center' }}>
+                                <Typography.Headline variant='large-strong' style={{ textAlign: 'center' }}>
                                     Профиль студента
                                 </Typography.Headline>
                                 <Flex direction="row" gap={10}>
@@ -132,51 +132,52 @@ const StudentProfile = () => {
                             {studentData && (
                                 <div
                                     style={{
-                                        padding: '24px',
+                                        padding: '16px',
                                         border: '1px solid var(--color-border-primary)',
                                         borderRadius: '8px',
                                         backgroundColor: 'var(--color-background-primary)',
                                         width: '100%',
-                                        maxWidth: '800px'
+                                        maxWidth: '100%',
+                                        boxSizing: 'border-box'
                                     }}
                                 >
                                     <Flex direction="column" gap={16}>
-                                        <Typography.Headline variant="large-strong">
+                                        <Typography.Headline variant="medium-strong" style={{ textAlign: 'center' }}>
                                             Личная информация
                                         </Typography.Headline>
                                         
                                         <Flex direction="column" gap={12}>
-                                            <Typography.Headline variant="medium">
-                                                ФИО: {studentData.name}
-                                            </Typography.Headline>
-                                            <Typography.Headline variant="medium">
-                                                Факультет: {studentData.faculty}
-                                            </Typography.Headline>
-                                            <Typography.Headline variant="medium">
-                                                Курс и группа: {studentData.courseWithGroup}
-                                            </Typography.Headline>
-                                            <Typography.Headline variant="medium">
-                                                Телефон: {studentData.contactPhone}
-                                            </Typography.Headline>
+                                            <Typography.Body variant="primary" style={{ wordBreak: 'break-word' }}>
+                                                <strong>ФИО:</strong> {studentData.name}
+                                            </Typography.Body>
+                                            <Typography.Body variant="primary" style={{ wordBreak: 'break-word' }}>
+                                                <strong>Факультет:</strong> {studentData.faculty}
+                                            </Typography.Body>
+                                            <Typography.Body variant="primary" style={{ wordBreak: 'break-word' }}>
+                                                <strong>Курс и группа:</strong> {studentData.courseWithGroup}
+                                            </Typography.Body>
+                                            <Typography.Body variant="primary" style={{ wordBreak: 'break-word' }}>
+                                                <strong>Телефон:</strong> {studentData.contactPhone}
+                                            </Typography.Body>
                                         </Flex>
                                     </Flex>
                                 </div>
                             )}
                             
                             {/* Applications Section */}
-                            <Flex direction="column" gap={12} style={{ width: '100%', maxWidth: '800px' }}>
-                                <Typography.Headline variant='large-strong'>
+                            <Flex direction="column" gap={12} style={{ width: '100%', maxWidth: '100%' }}>
+                                <Typography.Headline variant='medium-strong' style={{ textAlign: 'center', padding: '0px 0px 0px 16px'}}>
                                     Мои заявления
                                 </Typography.Headline>
                                 
                                 {loading ? (
-                                    <Typography.Headline variant="medium">
+                                    <Typography.Body variant="primary" style={{ textAlign: 'center' }}>
                                         Загрузка...
-                                    </Typography.Headline>
+                                    </Typography.Body>
                                 ) : applications.length === 0 ? (
-                                    <Typography.Headline variant="medium">
+                                    <Typography.Body variant="primary" style={{ textAlign: 'center' }}>
                                         У вас пока нет поданных заявлений
-                                    </Typography.Headline>
+                                    </Typography.Body>
                                 ) : (
                                     <CellList filled mode="island" style={{ width: '100%' }}>
                                         {applications.map((app) => (
@@ -185,40 +186,40 @@ const StudentProfile = () => {
                                                 title={`${getTypeText(app.type)} №${app.id}`}
                                                 subtitle={
                                                     <Flex direction="column" gap={4}>
-                                                        <Typography.Body variant="secondary">
-                                                            Дата подачи: {new Date(app.timestamp).toLocaleDateString()}
+                                                        <Typography.Body variant="secondary" style={{ wordBreak: 'break-word' }}>
+                                                            <strong>Дата подачи:</strong> {new Date(app.timestamp).toLocaleDateString()}
                                                         </Typography.Body>
-                                                        <Typography.Body variant="secondary">
-                                                            Статус: {getStatusText(app.status)}
+                                                        <Typography.Body variant="secondary" style={{ wordBreak: 'break-word' }}>
+                                                            <strong>Статус:</strong> {getStatusText(app.status)}
                                                         </Typography.Body>
                                                         {app.reason && (
-                                                            <Typography.Body variant="secondary">
-                                                                Причина: {app.reason}
+                                                            <Typography.Body variant="secondary" style={{ wordBreak: 'break-word' }}>
+                                                                <strong>Причина:</strong> {app.reason}
                                                             </Typography.Body>
                                                         )}
                                                         {app.expenses && (
-                                                            <Typography.Body variant="secondary">
-                                                                Расходы: {app.expenses} руб
+                                                            <Typography.Body variant="secondary" style={{ wordBreak: 'break-word' }}>
+                                                                <strong>Расходы:</strong> {app.expenses} руб
                                                             </Typography.Body>
                                                         )}
                                                         {app.additional_info && (
-                                                            <Typography.Body variant="secondary">
-                                                                Дополнительная информация: {app.additional_info}
+                                                            <Typography.Body variant="secondary" style={{ wordBreak: 'break-word' }}>
+                                                                <strong>Дополнительная информация:</strong> {app.additional_info}
                                                             </Typography.Body>
                                                         )}
                                                         {app.passSerial && (
-                                                            <Typography.Body variant="secondary">
-                                                                Паспорт: {app.passSerial}
+                                                            <Typography.Body variant="secondary" style={{ wordBreak: 'break-word' }}>
+                                                                <strong>Паспорт:</strong> {app.passSerial}
                                                             </Typography.Body>
                                                         )}
                                                         {app.passPlace && (
-                                                            <Typography.Body variant="secondary">
-                                                                Выдан: {app.passPlace}
+                                                            <Typography.Body variant="secondary" style={{ wordBreak: 'break-word' }}>
+                                                                <strong>Выдан:</strong> {app.passPlace}
                                                             </Typography.Body>
                                                         )}
                                                         {app.registration && (
-                                                            <Typography.Body variant="secondary">
-                                                                Регистрация: {app.registration}
+                                                            <Typography.Body variant="secondary" style={{ wordBreak: 'break-word' }}>
+                                                                <strong>Регистрация:</strong> {app.registration}
                                                             </Typography.Body>
                                                         )}
                                                     </Flex>
@@ -228,7 +229,7 @@ const StudentProfile = () => {
                                     </CellList>
                                 )}
                             </Flex>
-                        </Flex>
+                        </div>
                     </Container>
                 </Panel>
             </MaxUI>
