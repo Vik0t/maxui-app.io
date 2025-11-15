@@ -1,16 +1,106 @@
-# React + Vite
+# Электронный деканат
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-приложение MAX для получения и оброботки студенческих заявлениий на материальную помощь и справки от образовательного учреждения.
 
-Currently, two official plugins are available:
+## Функции
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Система аутентификации студентов и деканата
+- Управление заявлениями (создание, обработка, одобрение/отклонение)
+- Панель статистики заявок
+- Адаптивный интерфейс с компонентами Max UI
 
-## React Compiler
+## Предварительные требования
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Перед началом убедитесь, что у вас установлено следующее:
 
-## Expanding the ESLint configuration
+- Node.js (v16 или выше)
+- npm (v8 или выше)
+- Docker и Docker Compose (для развертывания с Docker)
+- Git
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Установка
+
+### Установка с Docker (Рекомендуется)
+
+1. Клонируйте репозиторий:
+```bash
+git clone https://github.com/Vik0t/maxui-app.io
+cd maxui-app.io
+```
+
+2. Соберите и запустите сервисы:
+```bash
+docker-compose up --build
+```
+
+3. Доступ к приложению по адресу http://localhost
+
+### Ручная установка
+
+1. Клонируйте репозиторий:
+```bash
+git clone https://github.com/Vik0t/maxui-app.io
+cd maxui-app.io
+```
+
+2. Установите зависимости фронтенда:
+```bash
+npm install
+```
+
+3. Установите зависимости бэкенда:
+```bash
+cd server
+npm install
+cd ..
+```
+
+## Варианты развертывания
+
+### Развертывание с Docker
+
+Самый простой способ развернуть приложение - использовать Docker:
+
+1. Соберите и запустите сервисы:
+```bash
+docker-compose up --build -d
+```
+
+2. Доступ к приложению:
+   - Фронтенд: http://localhost
+   - API бэкенда: http://localhost:3002/api
+
+3. Чтобы остановить приложение:
+```bash
+docker-compose down
+```
+
+## Учетные данные по умолчанию
+
+### Учетная запись деканата
+- Имя пользователя: `dean`
+- Пароль: `dean123`
+
+### Учетная запись студента
+- Email: `ivanov@g.nsu.ru`
+- Пароль: `student123`
+
+## Структура проекта
+
+```
+maxui-app.io/
+├── server/                 # Сервер бэкенда
+│   ├── db/                 # Файлы базы данных
+│   ├── index.js            # Серверный код
+│   └── package.json        # Зависимости бэкенда
+├── src/                    # Исходный код фронтенда
+│   ├── pages/              # React компоненты страниц
+│   ├── utils/              # Вспомогательные функции
+│   ├── App.jsx             # Основной компонент приложения
+│   └── main.jsx            # Код фронтенда
+├── .env                    # Переменные окружения
+├── docker-compose.yml      # Конфигурация Docker compose
+├── Dockerfile               # Конфигурация Docker
+├── nginx.conf              # Конфигурация Nginx
+└── package.json            # Зависимости фронтенда
+```

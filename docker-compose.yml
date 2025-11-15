@@ -19,6 +19,7 @@ services:
       - NODE_ENV=production
       - PORT=3002
       - JWT_SECRET=your_jwt_secret_here_change_in_production
+    platform: linux/amd64
     volumes:
       - backend_data:/app/db
     restart: unless-stopped
