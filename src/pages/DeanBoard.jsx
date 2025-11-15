@@ -54,7 +54,7 @@ const DeanBoard = () => {
     return (
         <div className="general">
             <MaxUI>
-                <Panel centeredX centeredY style={{ height: '100vh', padding: '20px' }}>
+                <Panel centeredX style={{ height: '100vh', padding: '20px' }}>
                     <Container fullWidth={true} style={{ maxWidth: '600px', width: '100%' }}>
                         <Flex direction="column" gap={40} align="center" style={{ width: '100%' }}>
                             <Flex direction="row" justify="space-between" align="center" style={{ width: '100%', maxWidth: '500px' }}>

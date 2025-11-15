@@ -3,10 +3,16 @@
   height: calc(100vh - 20px);
   max-height: calc(100vh - 20px);
   overflow: hidden;
-  background-color: var(--background-primary, #17181c);
+  background-color: var(--background-primary, #f0f2f5);
   margin: 0;
   box-sizing: border-box;
   padding: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .general {
+    background-color: var(--background-primary, #17181c);
+  }
 }
 
 /* Wrapper for form elements to make them responsive */
