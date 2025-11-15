@@ -6,7 +6,7 @@ import App from "./App";
 // Create root and render (React 18+ syntax)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter basename="/maxui-app.io">
+  <BrowserRouter basename="/">
     <App />
   </BrowserRouter>
 );

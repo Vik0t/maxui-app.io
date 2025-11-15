@@ -1,8 +1,9 @@
 // Utility functions for handling applications data
 //const API_BASE_URL = 'http://localhost:3001/api';
 // const API_BASE_URL = 'http://localhost:3002/api';
-const API_BASE_URL = 'https://maxunibot.ru/api'
+// const API_BASE_URL = 'https://maxunibot.ru/api'
 // const API_BASE_URL = 'https://max-server-woad.vercel.app/api';
+const API_BASE_URL = '/api';
 
 // Store JWT token
 let authToken = localStorage.getItem('authToken') || null;

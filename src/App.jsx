@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Main from "./Main";
+import Main from "./main.jsx";
 import "./App.css";
 
 export default function App() {
